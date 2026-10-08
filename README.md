@@ -1,2 +1,38 @@
 # CSE3120_Contest1
-Peer-review by deadline April 9. Students get bonuses for generating deep peer reviews with execution reports, and in case of missing to make required critiques lose themselves the points that they fail to subtract. Each review is 1/3 of the grade.  The github links to the two projects assigned to you are in a comment I submitted here.  For peer review, address the items:  github submission rules followed (12 points): For each student in the project separately verify: has commits in at least 3 different weeks. (5 points) each commit of that student has no more than 20 changed lines of code (4 point) each commit of that student is labeled with title/comment describing clearly what was done (1 point) for each commit, the description corresponds with the changes actually made (1 point) each commit compiles (1 point) - originality (3 points)  - complexity of assembly code (1 point)  - runs/bugs (3 points)  code comments and compilation instructions (1 point) Provide and assess relevance to the specific  areas: public health, safety, and welfare, as well as global, cultural, social, environmental, and economic factors  =============  An assembly programming contest, with demo in class. You can program any game/task of your choice. You can program in teams of up to 2 students. The team needs not be the same as the one for labs.     HERE YOU SHOULD SUBMIT (as submission not as comment!) -THE ZIP SNAPSHOT OF YOUR REPOSITORY WHICH SHOULD INCLUDE SOURCES, COMPILATION SCRIPTS, DOCUMENTATION WITH EXPLANATIONS OF HOW TO COMPILE AND RUN -THE LINK TO THE GITHUB SITE     From Syllabus: The code developed in a public github project. The complexity does not have to be high, but you should work on it during at least 3 weeks with multiple github submissions. You should submit to github after each 10-20 modified lines of code, and each submission should compile and be commented with a detailed explanation of the features or corrections it adds. For team projects, team members should have different github accounts and submit modifications from their accounts to enable evaluation of individual contributions. IN CASE DURING A SUBMISSION YOU HAVE CODE WITH FEATURES THAT WERE NOT TAUGHED IN CLASS UP TO THAT MOMENT, YOU MUST INCLUDE A COMMENT EXPLAINING THAT IT WAS NOT LEARNED FROM CLASS, AND EXPLAINING HOW YOU LEARNED THAT FEATURE. OTHERWISE YOU WILL BE ACUSED OF HAVING IMPROPERLY USED AI GENERATION AND WILL GET THE CORRESPONDING PENALTY. An A cannot be achieved without working on the contest assignments.  The most voted contest project presentations also earn up to 10% bonus points
+Peer-review by deadline April 9. Students get bonuses for generating deep peer reviews with execution reports, and in case of missing to make required critiques lose themselves the points that they fail to subtract. Each review is 1/3 of the grade.
+
+The github links to the two projects assigned to you are in a comment I submitted here.
+
+For peer review, address the items:
+
+github submission rules followed (12 points):
+For each student in the project separately verify:
+has commits in at least 3 different weeks. (5 points)
+each commit of that student has no more than 20 changed lines of code (4 point)
+each commit of that student is labeled with title/comment describing clearly what was done (1 point)
+for each commit, the description corresponds with the changes actually made (1 point)
+each commit compiles (1 point)
+- originality (3 points)
+
+- complexity of assembly code (1 point)
+
+- runs/bugs (3 points)
+
+code comments and compilation instructions (1 point)
+Provide and assess relevance to the specific  areas: public health, safety, and welfare, as well as global, cultural, social, environmental, and economic factors
+
+=============
+
+An assembly programming contest, with demo in class. You can program any game/task of your choice. You can program in teams of up to 2 students. The team needs not be the same as the one for labs.
+
+ 
+
+HERE YOU SHOULD SUBMIT (as submission not as comment!)
+-THE ZIP SNAPSHOT OF YOUR REPOSITORY WHICH SHOULD INCLUDE SOURCES, COMPILATION SCRIPTS, DOCUMENTATION WITH EXPLANATIONS OF HOW TO COMPILE AND RUN
+-THE LINK TO THE GITHUB SITE
+
+ 
+
+From Syllabus: The code developed in a public github project. The complexity does not have to be high, but you should work on it during at least 3 weeks with multiple github submissions. You should submit to github after each 10-20 modified lines of code, and each submission should compile and be commented with a detailed explanation of the features or corrections it adds. For team projects, team members should have different github accounts and submit modifications from their accounts to enable evaluation of individual contributions. IN CASE DURING A SUBMISSION YOU HAVE CODE WITH FEATURES THAT WERE NOT TAUGHED IN CLASS UP TO THAT MOMENT, YOU MUST INCLUDE A COMMENT EXPLAINING THAT IT WAS NOT LEARNED FROM CLASS, AND EXPLAINING HOW YOU LEARNED THAT FEATURE. OTHERWISE YOU WILL BE ACUSED OF HAVING IMPROPERLY USED AI GENERATION AND WILL GET THE CORRESPONDING PENALTY. An A cannot be achieved without working on the contest assignments.
+
+The most voted contest project presentations also earn up to 10% bonus points
