@@ -84,20 +84,55 @@ diamondsTwo BYTE " _________",13,10,"|2        |",13,10,"|O        |",13,10,"|  
 heartsTwo BYTE " _________",13,10,"|2        |",13,10,"|#        |",13,10,"|    #    |",13,10,"|         |",13,10,"|    #    |",13,10,"|        #|",13,10,"|        Z|",13,10," ~~~~~~~~~ ",13,10,0
 spadesTwo BYTE " _________",13,10,"|2        |",13,10,"|@        |",13,10,"|    @    |",13,10,"|         |",13,10,"|    @    |",13,10,"|        @|",13,10,"|        Z|",13,10," ~~~~~~~~~ ",13,10,0
 
+cardTable DWORD OFFSET clubsAce, OFFSET clubsTwo,
+    OFFSET clubsThree, OFFSET clubsFour, OFFSET clubsFive,
+    OFFSET clubsSix, OFFSET clubsSeven, OFFSET clubsEight,
+    OFFSET clubsNine, OFFSET clubsTen, OFFSET clubsJack,
+    OFFSET clubsQueen, OFFSET clubsKing
+
+    DWORD OFFSET diamondsAce, OFFSET diamondsTwo,
+    OFFSET diamondsThree, OFFSET diamondsFour, OFFSET diamondsFive,
+    OFFSET diamondsSix, OFFSET diamondsSeven, OFFSET diamondsEight,
+    OFFSET diamondsNine, OFFSET diamondsTen, OFFSET diamondsJack,
+    OFFSET diamondsQueen, OFFSET diamondsKing
+
+    DWORD OFFSET heartsAce, OFFSET heartsTwo,
+    OFFSET heartsThree, OFFSET heartsFour, OFFSET heartsFive,
+    OFFSET heartsSix, OFFSET heartsSeven, OFFSET heartsEight,
+    OFFSET heartsNine, OFFSET heartsTen, OFFSET heartsJack,
+    OFFSET heartsQueen, OFFSET heartsKing
+
+    DWORD OFFSET spadesAce, OFFSET spadesTwo,
+    OFFSET spadesThree, OFFSET spadesFour, OFFSET spadesFive,
+    OFFSET spadesSix, OFFSET spadesSeven, OFFSET spadesEight,
+    OFFSET spadesNine, OFFSET spadesTen, OFFSET spadesJack,
+    OFFSET spadesQueen, OFFSET spadesKing
 
 .code
 main proc
+    call Randomize
+    
+    mov eax, 52
+    call RandomRange 
+
+    mov esi, cardTable[eax*4]
+
+    mov dl, 0
+    mov dh, 0
+    call PrintCardAt
+
+    mov eax, 52
+    call RandomRange 
+
+    mov esi, cardTable[eax*4]
+
+    mov dl, 12
+    mov dh, 0
+    call PrintCardAt
 
     
-    mov DH,0
-    mov DL,0
-	mov ESI, OFFSET clubsAce
-	call PrintCardAt
-	xor EDX, EDX
-	mov DH, 0
-	mov DL, 11
-	mov ESI, OFFSET clubsKing
-	call PrintCardAt
+
+
 
 	exit
 main endp
