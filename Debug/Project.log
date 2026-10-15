@@ -1,4 +1,4 @@
-﻿Build started 10/15/2026 2:02:22 PM.
+﻿Build started 10/15/2026 2:31:51 PM.
 Logging verbosity is set to: Detailed.     1>Project "C:\Users\rl800\Documents\GitHub\CSE3120_Contest1\Project.vcxproj" on node 2 (Build target(s)).
      1>Target "_CheckForInvalidConfigurationAndPlatform" in file "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "C:\Users\rl800\Documents\GitHub\CSE3120_Contest1\Project.vcxproj" (target "SetTelemetryEnvironmentVariables" depends on it):
      1>Task "Message"
@@ -129,7 +129,7 @@ Logging verbosity is set to: Detailed.     1>Project "C:\Users\rl800\Documents\G
          Assembling BlackJack.asm...
        Done executing task "Message".
        Task "MASM"
-         cmd.exe /C "C:\Users\rl800\AppData\Local\Temp\tmp56f4a1ec7b434353867375d321c71f1a.cmd"
+         cmd.exe /C "C:\Users\rl800\AppData\Local\Temp\tmpac40d7e7dd4d4ca5b94c18310a1c79e4.cmd"
          ml.exe /c /nologo /Sg /Zi /Fo"Debug\BlackJack.obj" /Fl"Project.lst" /I "c:\Irvine" /W3 /errorReport:prompt  /TaBlackJack.asm
      1>BlackJack.asm(5): warning A4011: multiple .MODEL directives found : .MODEL ignored
        Done executing task "MASM".
@@ -385,4 +385,4 @@ Build succeeded.
     1 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:02.23
+Time Elapsed 00:00:00.84

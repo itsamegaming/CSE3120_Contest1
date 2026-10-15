@@ -84,6 +84,8 @@ diamondsTwo BYTE " _________",13,10,"|2        |",13,10,"|O        |",13,10,"|  
 heartsTwo BYTE " _________",13,10,"|2        |",13,10,"|#        |",13,10,"|    #    |",13,10,"|         |",13,10,"|    #    |",13,10,"|        #|",13,10,"|        Z|",13,10," ~~~~~~~~~ ",13,10,0
 spadesTwo BYTE " _________",13,10,"|2        |",13,10,"|@        |",13,10,"|    @    |",13,10,"|         |",13,10,"|    @    |",13,10,"|        @|",13,10,"|        Z|",13,10," ~~~~~~~~~ ",13,10,0
 
+;Hidden Card 
+hiddenCard BYTE " _________",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10," ~~~~~~~~~ ",13,10,0
 cardTable DWORD OFFSET clubsAce, OFFSET clubsTwo,
     OFFSET clubsThree, OFFSET clubsFour, OFFSET clubsFive,
     OFFSET clubsSix, OFFSET clubsSeven, OFFSET clubsEight,
@@ -108,17 +110,47 @@ cardTable DWORD OFFSET clubsAce, OFFSET clubsTwo,
     OFFSET spadesNine, OFFSET spadesTen, OFFSET spadesJack,
     OFFSET spadesQueen, OFFSET spadesKing
 
+dealerMessage BYTE "Dealers Cards:", 0
+playerMessage BYTE "Players Cards:", 0
+dealerHiddenCard DWORD ?
+
 .code
 main proc
     call Randomize
+    mov EDX, OFFSET dealerMessage
+    call WriteString
+     
+    mov eax, 52
+    call RandomRange 
     
+    mov esi, cardTable[eax*4]
+    
+    mov dl, 0
+    mov dh, 1
+    call PrintCardAt
+
     mov eax, 52
     call RandomRange 
 
-    mov esi, cardTable[eax*4]
+    mov dealerHiddenCard, eax
+    mov esi, OFFSET hiddenCard
+
+    mov dl, 12
+    mov dh, 1
+    call PrintCardAt
 
     mov dl, 0
-    mov dh, 0
+    mov dh, 14
+    call Gotoxy
+    mov EDX, OFFSET playerMessage
+    
+    call WriteString
+    mov eax, 52
+    call RandomRange 
+    mov esi, cardTable[eax*4]
+    
+    mov dl, 0
+    mov dh, 15
     call PrintCardAt
 
     mov eax, 52
@@ -127,10 +159,9 @@ main proc
     mov esi, cardTable[eax*4]
 
     mov dl, 12
-    mov dh, 0
+    mov dh, 15
     call PrintCardAt
 
-    
 
 
 

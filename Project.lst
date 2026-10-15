@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/15/26 14:02:23
+Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/15/26 14:31:51
 BlackJack.asm						     Page 1 - 1
 
 
@@ -1302,7 +1302,32 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
 	   7E 7E 7E 20 0D
 	   0A 00
 
- 000017C4 00000000 R		cardTable DWORD OFFSET clubsAce, OFFSET clubsTwo,
+				;Hidden Card 
+ 000017C4 20 5F 5F 5F 5F	hiddenCard BYTE " _________",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10," ~~~~~~~~~ ",13,10,0
+	   5F 5F 5F 5F 5F
+	   0D 0A 7C 20 20
+	   20 20 20 20 20
+	   20 20 7C 0D 0A
+	   7C 20 20 20 20
+	   20 20 20 20 20
+	   7C 0D 0A 7C 20
+	   20 20 20 20 20
+	   20 20 20 7C 0D
+	   0A 7C 20 20 20
+	   20 20 20 20 20
+	   20 7C 0D 0A 7C
+	   20 20 20 20 20
+	   20 20 20 20 7C
+	   0D 0A 7C 20 20
+	   20 20 20 20 20
+	   20 20 7C 0D 0A
+	   7C 20 20 20 20
+	   20 20 20 20 20
+	   7C 0D 0A 20 7E
+	   7E 7E 7E 7E 7E
+	   7E 7E 7E 20 0D
+	   0A 00
+ 00001839 00000000 R		cardTable DWORD OFFSET clubsAce, OFFSET clubsTwo,
 	   000015F0 R
 	   0000141C R
 	   00001248 R
@@ -1320,7 +1345,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
 				    OFFSET clubsNine, OFFSET clubsTen, OFFSET clubsJack,
 				    OFFSET clubsQueen, OFFSET clubsKing
 
- 000017F8  00000075 R		    DWORD OFFSET diamondsAce, OFFSET diamondsTwo,
+ 0000186D  00000075 R		    DWORD OFFSET diamondsAce, OFFSET diamondsTwo,
 	   00001665 R
 	   00001491 R
 	   000012BD R
@@ -1338,7 +1363,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
 				    OFFSET diamondsNine, OFFSET diamondsTen, OFFSET diamondsJack,
 				    OFFSET diamondsQueen, OFFSET diamondsKing
 
- 0000182C  000000EA R		    DWORD OFFSET heartsAce, OFFSET heartsTwo,
+ 000018A1  000000EA R		    DWORD OFFSET heartsAce, OFFSET heartsTwo,
 	   000016DA R
 	   00001506 R
 	   00001332 R
@@ -1356,7 +1381,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
 				    OFFSET heartsNine, OFFSET heartsTen, OFFSET heartsJack,
 				    OFFSET heartsQueen, OFFSET heartsKing
 
- 00001860  0000015F R		    DWORD OFFSET spadesAce, OFFSET spadesTwo,
+ 000018D5  0000015F R		    DWORD OFFSET spadesAce, OFFSET spadesTwo,
 	   0000174F R
 	   0000157B R
 	   000013A7 R
@@ -1374,80 +1399,113 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
 				    OFFSET spadesNine, OFFSET spadesTen, OFFSET spadesJack,
 				    OFFSET spadesQueen, OFFSET spadesKing
 
+ 00001909 44 65 61 6C 65	dealerMessage BYTE "Dealers Cards:", 0
+	   72 73 20 43 61
+	   72 64 73 3A 00
+ 00001918 50 6C 61 79 65	playerMessage BYTE "Players Cards:", 0
+	   72 73 20 43 61
+	   72 64 73 3A 00
+ 00001927 00000000		dealerHiddenCard DWORD ?
  00000000			.code
  00000000			main proc
  00000000  E8 00000000 E	    call Randomize
+ 00000005  BA 00001909 R	    mov EDX, OFFSET dealerMessage
+ 0000000A  E8 00000000 E	    call WriteString
+				     
+ 0000000F  B8 00000034		    mov eax, 52
+ 00000014  E8 00000000 E	    call RandomRange 
 				    
- 00000005  B8 00000034		    mov eax, 52
- 0000000A  E8 00000000 E	    call RandomRange 
-
- 0000000F  8B 34 85		    mov esi, cardTable[eax*4]
-	   000017C4 R
-
- 00000016  B2 00		    mov dl, 0
- 00000018  B6 00		    mov dh, 0
- 0000001A  E8 00000021		    call PrintCardAt
-
- 0000001F  B8 00000034		    mov eax, 52
- 00000024  E8 00000000 E	    call RandomRange 
-
- 00000029  8B 34 85		    mov esi, cardTable[eax*4]
-	   000017C4 R
-
- 00000030  B2 0C		    mov dl, 12
- 00000032  B6 00		    mov dh, 0
- 00000034  E8 00000007		    call PrintCardAt
-
+ 00000019  8B 34 85		    mov esi, cardTable[eax*4]
+	   00001839 R
 				    
+ 00000020  B2 00		    mov dl, 0
+ 00000022  B6 01		    mov dh, 1
+ 00000024  E8 0000006B		    call PrintCardAt
+
+ 00000029  B8 00000034		    mov eax, 52
+ 0000002E  E8 00000000 E	    call RandomRange 
+
+ 00000033  A3 00001927 R	    mov dealerHiddenCard, eax
+ 00000038  BE 000017C4 R	    mov esi, OFFSET hiddenCard
+
+ 0000003D  B2 0C		    mov dl, 12
+ 0000003F  B6 01		    mov dh, 1
+ 00000041  E8 0000004E		    call PrintCardAt
+
+ 00000046  B2 00		    mov dl, 0
+ 00000048  B6 0E		    mov dh, 14
+ 0000004A  E8 00000000 E	    call Gotoxy
+ 0000004F  BA 00001918 R	    mov EDX, OFFSET playerMessage
+				    
+ 00000054  E8 00000000 E	    call WriteString
+ 00000059  B8 00000034		    mov eax, 52
+ 0000005E  E8 00000000 E	    call RandomRange 
+ 00000063  8B 34 85		    mov esi, cardTable[eax*4]
+	   00001839 R
+				    
+ 0000006A  B2 00		    mov dl, 0
+ 0000006C  B6 0F		    mov dh, 15
+ 0000006E  E8 00000021		    call PrintCardAt
+
+ 00000073  B8 00000034		    mov eax, 52
+ 00000078  E8 00000000 E	    call RandomRange 
+
+ 0000007D  8B 34 85		    mov esi, cardTable[eax*4]
+	   00001839 R
+
+ 00000084  B2 0C		    mov dl, 12
+ 00000086  B6 0F		    mov dh, 15
+ 00000088  E8 00000007		    call PrintCardAt
+
 
 
 
 					exit
- 00000039  6A 00	   *	    push   +000000000h
- 0000003B  E8 00000000 E   *	    call   ExitProcess
- 00000040			main endp
+ 0000008D  6A 00	   *	    push   +000000000h
+ 0000008F  E8 00000000 E   *	    call   ExitProcess
+ 00000094			main endp
 
- 00000040			PrintCardAt PROC USES eax ebx edx esi
- 00000040  50		   *	    push   eax
- 00000041  53		   *	    push   ebx
- 00000042  52		   *	    push   edx
- 00000043  56		   *	    push   esi
- 00000044  0F B7 DA		    movzx ebx, dx          ; BL = starting column, BH = row
- 00000047  E8 00000000 E	    call Gotoxy
+ 00000094			PrintCardAt PROC USES eax ebx edx esi
+ 00000094  50		   *	    push   eax
+ 00000095  53		   *	    push   ebx
+ 00000096  52		   *	    push   edx
+ 00000097  56		   *	    push   esi
+ 00000098  0F B7 DA		    movzx ebx, dx          ; BL = starting column, BH = row
+ 0000009B  E8 00000000 E	    call Gotoxy
 
- 0000004C			nextCharacter:
- 0000004C  8A 06		    mov al, [esi]
- 0000004E  46			    inc esi
+ 000000A0			nextCharacter:
+ 000000A0  8A 06		    mov al, [esi]
+ 000000A2  46			    inc esi
 
- 0000004F  3C 00		    cmp al, 0              ; End of string?
- 00000051  74 1B		    je finished
+ 000000A3  3C 00		    cmp al, 0              ; End of string?
+ 000000A5  74 1B		    je finished
 
- 00000053  3C 0D		    cmp al, 13             ; Ignore carriage return
- 00000055  74 F5		    je nextCharacter
+ 000000A7  3C 0D		    cmp al, 13             ; Ignore carriage return
+ 000000A9  74 F5		    je nextCharacter
 
- 00000057  3C 0A		    cmp al, 10             ; Handle newline ourselves
- 00000059  74 07		    je nextRow
+ 000000AB  3C 0A		    cmp al, 10             ; Handle newline ourselves
+ 000000AD  74 07		    je nextRow
 
- 0000005B  E8 00000000 E	    call WriteChar         ; Print character in AL
- 00000060  EB EA		    jmp nextCharacter
+ 000000AF  E8 00000000 E	    call WriteChar         ; Print character in AL
+ 000000B4  EB EA		    jmp nextCharacter
 
- 00000062			nextRow:
- 00000062  FE C7		    inc bh                 ; Move down one row
- 00000064  66| 8B D3		    mov dx, bx             ; Restore starting column and new row
- 00000067  E8 00000000 E	    call Gotoxy
- 0000006C  EB DE		    jmp nextCharacter
+ 000000B6			nextRow:
+ 000000B6  FE C7		    inc bh                 ; Move down one row
+ 000000B8  66| 8B D3		    mov dx, bx             ; Restore starting column and new row
+ 000000BB  E8 00000000 E	    call Gotoxy
+ 000000C0  EB DE		    jmp nextCharacter
 
- 0000006E			finished:
+ 000000C2			finished:
 				    ret
- 0000006E  5E		   *	    pop    esi
- 0000006F  5A		   *	    pop    edx
- 00000070  5B		   *	    pop    ebx
- 00000071  58		   *	    pop    eax
- 00000072  C3		   *	    ret    00000h
- 00000073			PrintCardAt ENDP
+ 000000C2  5E		   *	    pop    esi
+ 000000C3  5A		   *	    pop    edx
+ 000000C4  5B		   *	    pop    ebx
+ 000000C5  58		   *	    pop    eax
+ 000000C6  C3		   *	    ret    00000h
+ 000000C7			PrintCardAt ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/15/26 14:02:23
+Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/15/26 14:31:51
 BlackJack.asm						     Symbols 2 - 1
 
 
@@ -1541,8 +1599,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 00001894 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000073 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000192B Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000C7 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -1597,10 +1655,10 @@ OpenInputFile  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 ParseDecimal32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ParseInteger32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 PeekConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-PrintCardAt  . . . . . . . . . .	P Near	 00000040 _TEXT	Length= 00000033 Public STDCALL
-  nextCharacter  . . . . . . . .	L Near	 0000004C _TEXT	
-  nextRow  . . . . . . . . . . .	L Near	 00000062 _TEXT	
-  finished . . . . . . . . . . .	L Near	 0000006E _TEXT	
+PrintCardAt  . . . . . . . . . .	P Near	 00000094 _TEXT	Length= 00000033 Public STDCALL
+  nextCharacter  . . . . . . . .	L Near	 000000A0 _TEXT	
+  nextRow  . . . . . . . . . . .	L Near	 000000B6 _TEXT	
+  finished . . . . . . . . . . .	L Near	 000000C2 _TEXT	
 Random32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 RandomRange  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Randomize  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -1653,7 +1711,7 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000040 Public STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000094 Public STDCALL
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
@@ -1875,7 +1933,7 @@ WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
 black  . . . . . . . . . . . . .	Number	 00000000h   
 blue . . . . . . . . . . . . . .	Number	 00000001h   
 brown  . . . . . . . . . . . . .	Number	 00000006h   
-cardTable  . . . . . . . . . . .	DWord	 000017C4 _DATA	
+cardTable  . . . . . . . . . . .	DWord	 00001839 _DATA	
 clubsAce . . . . . . . . . . . .	Byte	 00000000 _DATA	
 clubsEight . . . . . . . . . . .	Byte	 00000AF8 _DATA	
 clubsFive  . . . . . . . . . . .	Byte	 00001074 _DATA	
@@ -1890,6 +1948,8 @@ clubsTen . . . . . . . . . . . .	Byte	 00000750 _DATA
 clubsThree . . . . . . . . . . .	Byte	 0000141C _DATA	
 clubsTwo . . . . . . . . . . . .	Byte	 000015F0 _DATA	
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
+dealerHiddenCard . . . . . . . .	DWord	 00001927 _DATA	
+dealerMessage  . . . . . . . . .	Byte	 00001909 _DATA	
 diamondsAce  . . . . . . . . . .	Byte	 00000075 _DATA	
 diamondsEight  . . . . . . . . .	Byte	 00000B6D _DATA	
 diamondsFive . . . . . . . . . .	Byte	 000010E9 _DATA	
@@ -1919,6 +1979,7 @@ heartsSix  . . . . . . . . . . .	Byte	 00000F8A _DATA
 heartsTen  . . . . . . . . . . .	Byte	 0000083A _DATA	
 heartsThree  . . . . . . . . . .	Byte	 00001506 _DATA	
 heartsTwo  . . . . . . . . . . .	Byte	 000016DA _DATA	
+hiddenCard . . . . . . . . . . .	Byte	 000017C4 _DATA	
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
 lightGray  . . . . . . . . . . .	Number	 00000007h   
@@ -1926,6 +1987,7 @@ lightGreen . . . . . . . . . . .	Number	 0000000Ah
 lightMagenta . . . . . . . . . .	Number	 0000000Dh   
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
 magenta  . . . . . . . . . . . .	Number	 00000005h   
+playerMessage  . . . . . . . . .	Byte	 00001918 _DATA	
 red  . . . . . . . . . . . . . .	Number	 00000004h   
 spadesAce  . . . . . . . . . . .	Byte	 0000015F _DATA	
 spadesEight  . . . . . . . . . .	Byte	 00000C57 _DATA	
