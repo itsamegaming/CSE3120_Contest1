@@ -109,11 +109,21 @@ cardTable DWORD OFFSET clubsAce, OFFSET clubsTwo,
     OFFSET spadesSix, OFFSET spadesSeven, OFFSET spadesEight,
     OFFSET spadesNine, OFFSET spadesTen, OFFSET spadesJack,
     OFFSET spadesQueen, OFFSET spadesKing
-
+cardValues BYTE 1,2,3,4,5,6,7,8,9,10,10,10,10
+           BYTE 1,2,3,4,5,6,7,8,9,10,10,10,10
+           BYTE 1,2,3,4,5,6,7,8,9,10,10,10,10
+           BYTE 1,2,3,4,5,6,7,8,9,10,10,10,10
 dealerMessage BYTE "Dealers Cards:", 0
 playerMessage BYTE "Players Cards:", 0
 dealerHiddenCard DWORD ?
+dealerScore BYTE 0
+playerScore BYTE 0
 
+dealerAce BYTE 0
+playerAce BYTE 0
+
+dealerWinMessage BYTE "Dealer has Won",0
+playerWinMessage BYTE "Player has Won",0
 .code
 main proc
     call Randomize
@@ -123,8 +133,12 @@ main proc
     mov eax, 52
     call RandomRange 
     
-    mov esi, cardTable[eax*4]
-    
+    mov esi, cardTable[EAX*4]
+    mov bl, cardValues[EAX] 
+    add dealerScore, bl
+    .IF bl == 1
+        mov dealerAce, 1
+    .endif
     mov dl, 0
     mov dh, 1
     call PrintCardAt
@@ -134,10 +148,20 @@ main proc
 
     mov dealerHiddenCard, eax
     mov esi, OFFSET hiddenCard
-
+    mov bl, cardValues[EAX]
+    add dealerScore, bl
+   .IF bl == 1
+        mov dealerAce, 1
+    .endif
     mov dl, 12
     mov dh, 1
     call PrintCardAt
+    .IF dealerAce == 1 && dealerScore == 11
+        call Clrscr
+        mov EDX, OFFSET dealerWinMessage
+        call WriteString
+        jmp endProg
+    .endif
 
     mov dl, 0
     mov dh, 14
@@ -148,7 +172,8 @@ main proc
     mov eax, 52
     call RandomRange 
     mov esi, cardTable[eax*4]
-    
+    mov bl, cardValues[EAX]
+    add playerScore, bl
     mov dl, 0
     mov dh, 15
     call PrintCardAt
@@ -157,6 +182,9 @@ main proc
     call RandomRange 
 
     mov esi, cardTable[eax*4]
+    mov esi, cardTable[eax*4]
+    mov bl, cardValues[EAX]
+    add playerScore, bl
 
     mov dl, 12
     mov dh, 15
@@ -164,6 +192,9 @@ main proc
 
 
 
+    
+
+    endProg:
 
 	exit
 main endp
