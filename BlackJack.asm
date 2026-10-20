@@ -124,6 +124,7 @@ playerAce BYTE 0
 
 dealerWinMessage BYTE "Dealer has Won",0
 playerWinMessage BYTE "Player has Won",0
+playerMoveMessage BYTE "Hit(1) or Stand(2)",0
 .code
 main proc
     call Randomize
@@ -167,8 +168,8 @@ main proc
     mov dh, 14
     call Gotoxy
     mov EDX, OFFSET playerMessage
-    
     call WriteString
+
     mov eax, 52
     call RandomRange 
     mov esi, cardTable[eax*4]
@@ -189,7 +190,36 @@ main proc
     mov dl, 12
     mov dh, 15
     call PrintCardAt
+    playerTurn:
+    .IF (playerScore >= 21)
+        jmp playerStand
+    .endIF
 
+    mov dl, 0
+    mov dh, 25
+    call Gotoxy
+    mov EDX, OFFSET playerMoveMessage
+    call WriteString
+
+    Call ReadInt
+    cmp EAX, 1
+    je playerHit
+    jmp playerStand
+
+
+
+    playerHit:
+    mov dl, 24
+    mov dh, 15
+    call Gotoxy
+    mov eax, 52
+    call RandomRange 
+    mov esi, cardTable[eax*4]
+    mov bl, cardValues[EAX]
+    add playerScore, bl
+    call PrintCardAt
+    jmp playerTurn
+    playerStand:
 
 
     
