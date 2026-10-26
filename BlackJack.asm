@@ -109,10 +109,10 @@ cardTable DWORD OFFSET clubsAce, OFFSET clubsTwo,
     OFFSET spadesSix, OFFSET spadesSeven, OFFSET spadesEight,
     OFFSET spadesNine, OFFSET spadesTen, OFFSET spadesJack,
     OFFSET spadesQueen, OFFSET spadesKing
-cardValues BYTE 1,2,3,4,5,6,7,8,9,10,10,10,10
-           BYTE 1,2,3,4,5,6,7,8,9,10,10,10,10
-           BYTE 1,2,3,4,5,6,7,8,9,10,10,10,10
-           BYTE 1,2,3,4,5,6,7,8,9,10,10,10,10
+cardValues BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
+           BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
+           BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
+           BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
 dealerMessage BYTE "Dealers Cards:", 0
 playerMessage BYTE "Players Cards:", 0
 dealerHiddenCard DWORD ?
@@ -125,6 +125,8 @@ playerAce BYTE 0
 dealerWinMessage BYTE "Dealer has Won",0
 playerWinMessage BYTE "Player has Won",0
 playerMoveMessage BYTE "Hit(1) or Stand(2)",0
+playerCardCount BYTE 0
+dealerCardCount BYTE 0
 .code
 main proc
     call Randomize
@@ -137,13 +139,15 @@ main proc
     mov esi, cardTable[EAX*4]
     mov bl, cardValues[EAX] 
     add dealerScore, bl
-    .IF bl == 1
-        mov dealerAce, 1
+    .IF bl == 11
+        inc dealerAce
     .endif
-    mov dl, 0
+    movzx eax, dealerCardCount  
+    imul eax, eax, 12          
+    mov dl, al
     mov dh, 1
     call PrintCardAt
-
+    inc dealerCardCount
     mov eax, 52
     call RandomRange 
 
@@ -151,18 +155,27 @@ main proc
     mov esi, OFFSET hiddenCard
     mov bl, cardValues[EAX]
     add dealerScore, bl
-   .IF bl == 1
-        mov dealerAce, 1
+   .IF bl == 11
+        inc dealerAce
     .endif
-    mov dl, 12
+    movzx eax, dealerCardCount  
+    imul eax, eax, 12          
+    mov dl, al
     mov dh, 1
     call PrintCardAt
-    .IF dealerAce == 1 && dealerScore == 11
+    inc dealerCardCount
+
+    .IF dealerScore == 21
         call Clrscr
         mov EDX, OFFSET dealerWinMessage
         call WriteString
         jmp endProg
     .endif
+    .IF dealerScore > 21
+        dec dealerAce
+        sub dealerScore, 10
+    .endIF
+
 
     mov dl, 0
     mov dh, 14
@@ -175,10 +188,15 @@ main proc
     mov esi, cardTable[eax*4]
     mov bl, cardValues[EAX]
     add playerScore, bl
-    mov dl, 0
+    .IF bl == 11
+        inc playerAce
+    .endif
+    movzx eax, playerCardCount  
+    imul eax, eax, 12          
+    mov dl, al
     mov dh, 15
     call PrintCardAt
-
+    inc playerCardCount
     mov eax, 52
     call RandomRange 
 
@@ -186,12 +204,23 @@ main proc
     mov esi, cardTable[eax*4]
     mov bl, cardValues[EAX]
     add playerScore, bl
-
-    mov dl, 12
+    .IF bl == 11
+        inc playerAce
+    .endif
+    movzx eax, playerCardCount  
+    imul eax, eax, 12          
+    mov dl, al
     mov dh, 15
     call PrintCardAt
+    inc playerCardCount
     playerTurn:
     .IF (playerScore >= 21)
+        .IF(playerAce >= 1)
+            dec playerAce
+            sub playerScore, 10
+            jmp playerTurn
+        .endIF
+            
         jmp playerStand
     .endIF
 
@@ -209,7 +238,9 @@ main proc
 
 
     playerHit:
-    mov dl, 24
+    movzx eax, playerCardCount  
+    imul eax, eax, 12          
+    mov dl, al
     mov dh, 15
     call Gotoxy
     mov eax, 52
@@ -218,11 +249,23 @@ main proc
     mov bl, cardValues[EAX]
     add playerScore, bl
     call PrintCardAt
+    inc playerCardCount
     jmp playerTurn
     playerStand:
+    .IF playerScore > 21
+        jmp endProg
+    .endIF
+    .IF dealerScore > 16
+        jmp determineWinner
+    .endIF
 
 
+    dealerHit:
+
+    dealerStand:
     
+    determineWinner:
+
 
     endProg:
 
