@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/26/26 11:54:24
+Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/26/26 13:03:28
 BlackJack.asm						     Page 1 - 1
 
 
@@ -1459,7 +1459,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  0000003E  6B C0 0C		    imul eax, eax, 12          
  00000041  8A D0		    mov dl, al
  00000043  B6 01		    mov dh, 1
- 00000045  E8 000001B5		    call PrintCardAt
+ 00000045  E8 000002A0		    call PrintCardAt
  0000004A  FE 05 00001995 R	    inc dealerCardCount
  00000050  B8 00000034		    mov eax, 52
  00000055  E8 00000000 E	    call RandomRange 
@@ -1479,198 +1479,297 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  00000082  6B C0 0C		    imul eax, eax, 12          
  00000085  8A D0		    mov dl, al
  00000087  B6 01		    mov dh, 1
- 00000089  E8 00000171		    call PrintCardAt
+ 00000089  E8 0000025C		    call PrintCardAt
  0000008E  FE 05 00001995 R	    inc dealerCardCount
 
-				    .IF dealerScore == 21
+				    
+				    .IF dealerScore > 21
  00000094  80 3D 0000195F R
 	   15		   *	    cmp    dealerScore, 015h
- 0000009B  75 14	   *	    jne    @C0005
- 0000009D  E8 00000000 E	        call Clrscr
- 000000A2  BA 00001963 R	        mov EDX, OFFSET dealerWinMessage
- 000000A7  E8 00000000 E	        call WriteString
- 000000AC  E9 00000147		        jmp endProg
+ 0000009B  76 0D	   *	    jbe    @C0005
+ 0000009D  FE 0D 00001961 R	        dec dealerAce
+ 000000A3  80 2D 0000195F R	        sub dealerScore, 10
+	   0A
+				    .endIF
+ 000000AA		   *@C0005:
+
+
+ 000000AA  B2 00		    mov dl, 0
+ 000000AC  B6 0E		    mov dh, 14
+ 000000AE  E8 00000000 E	    call Gotoxy
+ 000000B3  BA 0000194C R	    mov EDX, OFFSET playerMessage
+ 000000B8  E8 00000000 E	    call WriteString
+
+ 000000BD  B8 00000034		    mov eax, 52
+ 000000C2  E8 00000000 E	    call RandomRange 
+ 000000C7  8B 34 85		    mov esi, cardTable[eax*4]
+	   00001839 R
+ 000000CE  8A 98 00001909 R	    mov bl, cardValues[EAX]
+ 000000D4  00 1D 00001960 R	    add playerScore, bl
+				    .IF bl == 11
+ 000000DA  80 FB 0B	   *	    cmp    bl, 00Bh
+ 000000DD  75 06	   *	    jne    @C0007
+ 000000DF  FE 05 00001962 R	        inc playerAce
 				    .endif
- 000000B1		   *@C0005:
-				    .IF dealerScore > 21
- 000000B1  80 3D 0000195F R
+ 000000E5		   *@C0007:
+ 000000E5  0F B6 05		    movzx eax, playerCardCount  
+	   00001994 R
+ 000000EC  6B C0 0C		    imul eax, eax, 12          
+ 000000EF  8A D0		    mov dl, al
+ 000000F1  B6 0F		    mov dh, 15
+ 000000F3  E8 000001F2		    call PrintCardAt
+ 000000F8  FE 05 00001994 R	    inc playerCardCount
+ 000000FE  B8 00000034		    mov eax, 52
+ 00000103  E8 00000000 E	    call RandomRange 
+
+ 00000108  8B 34 85		    mov esi, cardTable[eax*4]
+	   00001839 R
+ 0000010F  8A 98 00001909 R	    mov bl, cardValues[EAX]
+ 00000115  00 1D 00001960 R	    add playerScore, bl
+				    .IF bl == 11
+ 0000011B  80 FB 0B	   *	    cmp    bl, 00Bh
+ 0000011E  75 06	   *	    jne    @C0009
+ 00000120  FE 05 00001962 R	        inc playerAce
+				    .endif
+ 00000126		   *@C0009:
+ 00000126  0F B6 05		    movzx eax, playerCardCount  
+	   00001994 R
+ 0000012D  6B C0 0C		    imul eax, eax, 12          
+ 00000130  8A D0		    mov dl, al
+ 00000132  B6 0F		    mov dh, 15
+ 00000134  E8 000001B1		    call PrintCardAt
+ 00000139  FE 05 00001994 R	    inc playerCardCount
+				    .IF dealerScore == 21 && playerScore == 21
+ 0000013F  80 3D 0000195F R
 	   15		   *	    cmp    dealerScore, 015h
- 000000B8  76 0D	   *	    jbe    @C0007
- 000000BA  FE 0D 00001961 R	        dec dealerAce
- 000000C0  80 2D 0000195F R	        sub dealerScore, 10
-	   0A
-				    .endIF
- 000000C7		   *@C0007:
-
-
- 000000C7  B2 00		    mov dl, 0
- 000000C9  B6 0E		    mov dh, 14
- 000000CB  E8 00000000 E	    call Gotoxy
- 000000D0  BA 0000194C R	    mov EDX, OFFSET playerMessage
- 000000D5  E8 00000000 E	    call WriteString
-
- 000000DA  B8 00000034		    mov eax, 52
- 000000DF  E8 00000000 E	    call RandomRange 
- 000000E4  8B 34 85		    mov esi, cardTable[eax*4]
-	   00001839 R
- 000000EB  8A 98 00001909 R	    mov bl, cardValues[EAX]
- 000000F1  00 1D 00001960 R	    add playerScore, bl
-				    .IF bl == 11
- 000000F7  80 FB 0B	   *	    cmp    bl, 00Bh
- 000000FA  75 06	   *	    jne    @C0009
- 000000FC  FE 05 00001962 R	        inc playerAce
-				    .endif
- 00000102		   *@C0009:
- 00000102  0F B6 05		    movzx eax, playerCardCount  
-	   00001994 R
- 00000109  6B C0 0C		    imul eax, eax, 12          
- 0000010C  8A D0		    mov dl, al
- 0000010E  B6 0F		    mov dh, 15
- 00000110  E8 000000EA		    call PrintCardAt
- 00000115  FE 05 00001994 R	    inc playerCardCount
- 0000011B  B8 00000034		    mov eax, 52
- 00000120  E8 00000000 E	    call RandomRange 
-
- 00000125  8B 34 85		    mov esi, cardTable[eax*4]
-	   00001839 R
- 0000012C  8B 34 85		    mov esi, cardTable[eax*4]
-	   00001839 R
- 00000133  8A 98 00001909 R	    mov bl, cardValues[EAX]
- 00000139  00 1D 00001960 R	    add playerScore, bl
-				    .IF bl == 11
- 0000013F  80 FB 0B	   *	    cmp    bl, 00Bh
- 00000142  75 06	   *	    jne    @C000B
- 00000144  FE 05 00001962 R	        inc playerAce
-				    .endif
- 0000014A		   *@C000B:
- 0000014A  0F B6 05		    movzx eax, playerCardCount  
-	   00001994 R
- 00000151  6B C0 0C		    imul eax, eax, 12          
- 00000154  8A D0		    mov dl, al
- 00000156  B6 0F		    mov dh, 15
- 00000158  E8 000000A2		    call PrintCardAt
- 0000015D  FE 05 00001994 R	    inc playerCardCount
- 00000163			    playerTurn:
-				    .IF (playerScore >= 21)
- 00000163  80 3D 00001960 R
+ 00000146  75 23	   *	    jne    @C000B
+ 00000148  80 3D 00001960 R
 	   15		   *	    cmp    playerScore, 015h
- 0000016A  72 1A	   *	    jb	@C000D
+ 0000014F  75 1A	   *	    jne    @C000B
+ 00000151  B2 0C		        mov dl, 12
+ 00000153  B6 01		        mov dh, 1
+ 00000155  A1 0000195B R	        mov EAX, dealerHiddenCard
+ 0000015A  8B 34 85		        mov ESI, cardTable[EAX*4]
+	   00001839 R
+ 00000161  E8 00000184		        call PrintCardAt
+ 00000166  E9 00000178		        jmp tie
+				    .endIF
+ 0000016B		   *@C000B:
+				    .IF dealerScore == 21 
+ 0000016B  80 3D 0000195F R
+	   15		   *	    cmp    dealerScore, 015h
+ 00000172  75 1A	   *	    jne    @C000E
+ 00000174  B2 0C		        mov dl, 12
+ 00000176  B6 01		        mov dh, 1
+ 00000178  A1 0000195B R	        mov EAX, dealerHiddenCard
+ 0000017D  8B 34 85		        mov ESI, cardTable[EAX*4]
+	   00001839 R
+ 00000184  E8 00000161		        call PrintCardAt
+ 00000189  E9 00000155		        jmp dealerWin
+				    .endif
+ 0000018E		   *@C000E:
+				    .IF playerScore == 21
+ 0000018E  80 3D 00001960 R
+	   15		   *	    cmp    playerScore, 015h
+ 00000195  75 1A	   *	    jne    @C0010
+ 00000197  B2 0C		        mov dl, 12
+ 00000199  B6 01		        mov dh, 1
+ 0000019B  A1 0000195B R	        mov EAX, dealerHiddenCard
+ 000001A0  8B 34 85		        mov ESI, cardTable[EAX*4]
+	   00001839 R
+ 000001A7  E8 0000013E		        call PrintCardAt
+ 000001AC  E9 00000132		        jmp playerWin
+				    .endIF
+ 000001B1		   *@C0010:
+
+ 000001B1			    playerTurn:
+				    .IF (playerScore > 21)
+ 000001B1  80 3D 00001960 R
+	   15		   *	    cmp    playerScore, 015h
+ 000001B8  76 1D	   *	    jbe    @C0012
 				        .IF(playerAce >= 1)
- 0000016C  80 3D 00001962 R
+ 000001BA  80 3D 00001962 R
 	   01		   *	    cmp    playerAce, 001h
- 00000173  72 0F	   *	    jb	@C000F
- 00000175  FE 0D 00001962 R	            dec playerAce
- 0000017B  80 2D 00001960 R	            sub playerScore, 10
+ 000001C1  72 0F	   *	    jb	@C0014
+ 000001C3  FE 0D 00001962 R	            dec playerAce
+ 000001C9  80 2D 00001960 R	            sub playerScore, 10
 	   0A
- 00000182  EB DF		            jmp playerTurn
+ 000001D0  EB DF		            jmp playerTurn
 				        .endIF
-				            
- 00000184		   *@C000F:
- 00000184  EB 5C		        jmp playerStand
-				    .endIF
- 00000186		   *@C000D:
-
- 00000186  B2 00		    mov dl, 0
- 00000188  B6 19		    mov dh, 25
- 0000018A  E8 00000000 E	    call Gotoxy
- 0000018F  BA 00001981 R	    mov EDX, OFFSET playerMoveMessage
- 00000194  E8 00000000 E	    call WriteString
-
- 00000199  E8 00000000 E	    Call ReadInt
- 0000019E  83 F8 01		    cmp EAX, 1
- 000001A1  74 02		    je playerHit
- 000001A3  EB 3D		    jmp playerStand
-
-
-
- 000001A5			    playerHit:
- 000001A5  0F B6 05		    movzx eax, playerCardCount  
-	   00001994 R
- 000001AC  6B C0 0C		    imul eax, eax, 12          
- 000001AF  8A D0		    mov dl, al
- 000001B1  B6 0F		    mov dh, 15
- 000001B3  E8 00000000 E	    call Gotoxy
- 000001B8  B8 00000034		    mov eax, 52
- 000001BD  E8 00000000 E	    call RandomRange 
- 000001C2  8B 34 85		    mov esi, cardTable[eax*4]
-	   00001839 R
- 000001C9  8A 98 00001909 R	    mov bl, cardValues[EAX]
- 000001CF  00 1D 00001960 R	    add playerScore, bl
- 000001D5  E8 00000025		    call PrintCardAt
- 000001DA  FE 05 00001994 R	    inc playerCardCount
- 000001E0  EB 81		    jmp playerTurn
- 000001E2			    playerStand:
-				    .IF playerScore > 21
- 000001E2  80 3D 00001960 R
-	   15		   *	    cmp    playerScore, 015h
- 000001E9  76 02	   *	    jbe    @C0011
- 000001EB  EB 0B		        jmp endProg
-				    .endIF
- 000001ED		   *@C0011:
-				    .IF dealerScore > 16
- 000001ED  80 3D 0000195F R
-	   10		   *	    cmp    dealerScore, 010h
- 000001F4  76 02	   *	    jbe    @C0013
- 000001F6  EB 00		        jmp determineWinner
-				    .endIF
- 000001F8		   *@C0013:
-
-
- 000001F8			    dealerHit:
-
- 000001F8			    dealerStand:
 				    
- 000001F8			    determineWinner:
+ 000001D2		   *@C0014:
+ 000001D2  E9 0000010C		        jmp dealerWin
+				    .endIF
+ 000001D7		   *@C0012:
+				    .IF playerScore == 21
+ 000001D7  80 3D 00001960 R
+	   15		   *	    cmp    playerScore, 015h
+ 000001DE  75 02	   *	    jne    @C0016
+ 000001E0  EB 6A		        jmp playerStand
+				    .endIF
+ 000001E2		   *@C0016:
+ 000001E2  B2 00		    mov dl, 0
+ 000001E4  B6 19		    mov dh, 25
+ 000001E6  E8 00000000 E	    call Gotoxy
+ 000001EB  BA 00001981 R	    mov EDX, OFFSET playerMoveMessage
+ 000001F0  E8 00000000 E	    call WriteString
+
+ 000001F5  E8 00000000 E	    Call ReadInt
+ 000001FA  83 F8 01		    cmp EAX, 1
+ 000001FD  74 02		    je playerHit
+ 000001FF  EB 4B		    jmp playerStand
 
 
- 000001F8			    endProg:
+
+ 00000201			    playerHit:
+ 00000201  0F B6 05		    movzx eax, playerCardCount  
+	   00001994 R
+ 00000208  6B C0 0C		    imul eax, eax, 12          
+ 0000020B  8A D0		    mov dl, al
+ 0000020D  B6 0F		    mov dh, 15
+ 0000020F  E8 00000000 E	    call Gotoxy
+ 00000214  B8 00000034		    mov eax, 52
+ 00000219  E8 00000000 E	    call RandomRange 
+ 0000021E  8B 34 85		    mov esi, cardTable[eax*4]
+	   00001839 R
+ 00000225  8A 98 00001909 R	    mov bl, cardValues[EAX]
+ 0000022B  00 1D 00001960 R	    add playerScore, bl
+				    .IF bl == 11
+ 00000231  80 FB 0B	   *	    cmp    bl, 00Bh
+ 00000234  75 06	   *	    jne    @C0018
+ 00000236  FE 05 00001962 R	        inc playerAce
+				    .endif
+ 0000023C		   *@C0018:
+ 0000023C  E8 000000A9		    call PrintCardAt
+ 00000241  FE 05 00001994 R	    inc playerCardCount
+ 00000247  E9 FFFFFF65		    jmp playerTurn
+ 0000024C			    playerStand:
+ 0000024C  B2 0C		    mov dl, 12
+ 0000024E  B6 01		    mov dh, 1
+ 00000250  A1 0000195B R	    mov EAX, dealerHiddenCard
+ 00000255  8B 34 85		    mov ESI, cardTable[EAX*4]
+	   00001839 R
+ 0000025C  E8 00000089		    call PrintCardAt
+				   
+				    
+
+ 00000261			    dealerTurn:
+				    .IF dealerScore > 21
+ 00000261  80 3D 0000195F R
+	   15		   *	    cmp    dealerScore, 015h
+ 00000268  76 1A	   *	    jbe    @C001A
+				        .IF dealerAce >= 1
+ 0000026A  80 3D 00001961 R
+	   01		   *	    cmp    dealerAce, 001h
+ 00000271  72 0F	   *	    jb	@C001C
+ 00000273  FE 0D 00001961 R	            dec dealerAce
+ 00000279  80 2D 0000195F R	            sub dealerScore, 10
+	   0A
+ 00000280  EB DF		            jmp dealerTurn
+				        .endIF
+ 00000282		   *@C001C:
+ 00000282  EB 5F		        jmp playerWin
+				    .endIF
+ 00000284		   *@C001A:
+
+				    .IF dealerScore > 16
+ 00000284  80 3D 0000195F R
+	   10		   *	    cmp    dealerScore, 010h
+ 0000028B  76 02	   *	    jbe    @C001E
+ 0000028D  EB 43		        jmp determineWinner
+				    .endIF
+ 0000028F		   *@C001E:
+
+
+				   
+
+ 0000028F			    dealerHit:
+ 0000028F  B8 00000034		    mov eax, 52
+ 00000294  E8 00000000 E	    call RandomRange 
+				    
+ 00000299  8B 34 85		    mov esi, cardTable[EAX*4]
+	   00001839 R
+ 000002A0  8A 98 00001909 R	    mov bl, cardValues[EAX] 
+ 000002A6  00 1D 0000195F R	    add dealerScore, bl
+				    .IF bl == 11
+ 000002AC  80 FB 0B	   *	    cmp    bl, 00Bh
+ 000002AF  75 06	   *	    jne    @C0020
+ 000002B1  FE 05 00001961 R	        inc dealerAce
+				    .endif
+ 000002B7		   *@C0020:
+ 000002B7  0F B6 05		    movzx eax, dealerCardCount  
+	   00001995 R
+ 000002BE  6B C0 0C		    imul eax, eax, 12          
+ 000002C1  8A D0		    mov dl, al
+ 000002C3  B6 01		    mov dh, 1
+ 000002C5  E8 00000020		    call PrintCardAt
+ 000002CA  FE 05 00001995 R	    inc dealerCardCount
+ 000002D0  EB 8F		    jmp dealerTurn
+				    
+
+ 000002D2			    determineWinner:
+ 000002D2  A0 00001960 R	    mov al, playerScore
+ 000002D7  3A 05 0000195F R	    cmp al, dealerScore
+ 000002DD  77 04		    ja playerWin
+ 000002DF  72 02		    jb dealerWin
+ 000002E1  EB 00		    jmp tie
+
+
+ 000002E3			    playerWin:
+
+
+ 000002E3			    dealerWin:
+
+ 000002E3			    tie:
+
+ 000002E3			    endProg:
 
 					exit
- 000001F8  6A 00	   *	    push   +000000000h
- 000001FA  E8 00000000 E   *	    call   ExitProcess
- 000001FF			main endp
+ 000002E3  6A 00	   *	    push   +000000000h
+ 000002E5  E8 00000000 E   *	    call   ExitProcess
+ 000002EA			main endp
 
- 000001FF			PrintCardAt PROC USES eax ebx edx esi
- 000001FF  50		   *	    push   eax
- 00000200  53		   *	    push   ebx
- 00000201  52		   *	    push   edx
- 00000202  56		   *	    push   esi
- 00000203  0F B7 DA		    movzx ebx, dx          ; BL = starting column, BH = row
- 00000206  E8 00000000 E	    call Gotoxy
+ 000002EA			PrintCardAt PROC USES eax ebx edx esi
+ 000002EA  50		   *	    push   eax
+ 000002EB  53		   *	    push   ebx
+ 000002EC  52		   *	    push   edx
+ 000002ED  56		   *	    push   esi
+ 000002EE  0F B7 DA		    movzx ebx, dx          ; BL = starting column, BH = row
+ 000002F1  E8 00000000 E	    call Gotoxy
 
- 0000020B			nextCharacter:
- 0000020B  8A 06		    mov al, [esi]
- 0000020D  46			    inc esi
+ 000002F6			nextCharacter:
+ 000002F6  8A 06		    mov al, [esi]
+ 000002F8  46			    inc esi
 
- 0000020E  3C 00		    cmp al, 0              ; End of string?
- 00000210  74 1B		    je finished
+ 000002F9  3C 00		    cmp al, 0              ; End of string?
+ 000002FB  74 1B		    je finished
 
- 00000212  3C 0D		    cmp al, 13             ; Ignore carriage return
- 00000214  74 F5		    je nextCharacter
+ 000002FD  3C 0D		    cmp al, 13             ; Ignore carriage return
+ 000002FF  74 F5		    je nextCharacter
 
- 00000216  3C 0A		    cmp al, 10             ; Handle newline ourselves
- 00000218  74 07		    je nextRow
+ 00000301  3C 0A		    cmp al, 10             ; Handle newline ourselves
+ 00000303  74 07		    je nextRow
 
- 0000021A  E8 00000000 E	    call WriteChar         ; Print character in AL
- 0000021F  EB EA		    jmp nextCharacter
+ 00000305  E8 00000000 E	    call WriteChar         ; Print character in AL
+ 0000030A  EB EA		    jmp nextCharacter
 
- 00000221			nextRow:
- 00000221  FE C7		    inc bh                 ; Move down one row
- 00000223  66| 8B D3		    mov dx, bx             ; Restore starting column and new row
- 00000226  E8 00000000 E	    call Gotoxy
- 0000022B  EB DE		    jmp nextCharacter
+ 0000030C			nextRow:
+ 0000030C  FE C7		    inc bh                 ; Move down one row
+ 0000030E  66| 8B D3		    mov dx, bx             ; Restore starting column and new row
+ 00000311  E8 00000000 E	    call Gotoxy
+ 00000316  EB DE		    jmp nextCharacter
 
- 0000022D			finished:
+ 00000318			finished:
 				    ret
- 0000022D  5E		   *	    pop    esi
- 0000022E  5A		   *	    pop    edx
- 0000022F  5B		   *	    pop    ebx
- 00000230  58		   *	    pop    eax
- 00000231  C3		   *	    ret    00000h
- 00000232			PrintCardAt ENDP
+ 00000318  5E		   *	    pop    esi
+ 00000319  5A		   *	    pop    edx
+ 0000031A  5B		   *	    pop    ebx
+ 0000031B  58		   *	    pop    eax
+ 0000031C  C3		   *	    ret    00000h
+ 0000031D			PrintCardAt ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/26/26 11:54:24
+Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/26/26 13:03:28
 BlackJack.asm						     Symbols 2 - 1
 
 
@@ -1765,7 +1864,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00001996 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000232 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000031D Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -1820,10 +1919,10 @@ OpenInputFile  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 ParseDecimal32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ParseInteger32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 PeekConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-PrintCardAt  . . . . . . . . . .	P Near	 000001FF _TEXT	Length= 00000033 Public STDCALL
-  nextCharacter  . . . . . . . .	L Near	 0000020B _TEXT	
-  nextRow  . . . . . . . . . . .	L Near	 00000221 _TEXT	
-  finished . . . . . . . . . . .	L Near	 0000022D _TEXT	
+PrintCardAt  . . . . . . . . . .	P Near	 000002EA _TEXT	Length= 00000033 Public STDCALL
+  nextCharacter  . . . . . . . .	L Near	 000002F6 _TEXT	
+  nextRow  . . . . . . . . . . .	L Near	 0000030C _TEXT	
+  finished . . . . . . . . . . .	L Near	 00000318 _TEXT	
 Random32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 RandomRange  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Randomize  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -1876,14 +1975,17 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000001FF Public STDCALL
-  playerTurn . . . . . . . . . .	L Near	 00000163 _TEXT	
-  playerHit  . . . . . . . . . .	L Near	 000001A5 _TEXT	
-  playerStand  . . . . . . . . .	L Near	 000001E2 _TEXT	
-  dealerHit  . . . . . . . . . .	L Near	 000001F8 _TEXT	
-  dealerStand  . . . . . . . . .	L Near	 000001F8 _TEXT	
-  determineWinner  . . . . . . .	L Near	 000001F8 _TEXT	
-  endProg  . . . . . . . . . . .	L Near	 000001F8 _TEXT	
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000002EA Public STDCALL
+  playerTurn . . . . . . . . . .	L Near	 000001B1 _TEXT	
+  playerHit  . . . . . . . . . .	L Near	 00000201 _TEXT	
+  playerStand  . . . . . . . . .	L Near	 0000024C _TEXT	
+  dealerTurn . . . . . . . . . .	L Near	 00000261 _TEXT	
+  dealerHit  . . . . . . . . . .	L Near	 0000028F _TEXT	
+  determineWinner  . . . . . . .	L Near	 000002D2 _TEXT	
+  playerWin  . . . . . . . . . .	L Near	 000002E3 _TEXT	
+  dealerWin  . . . . . . . . . .	L Near	 000002E3 _TEXT	
+  tie  . . . . . . . . . . . . .	L Near	 000002E3 _TEXT	
+  endProg  . . . . . . . . . . .	L Near	 000002E3 _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
