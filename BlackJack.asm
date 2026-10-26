@@ -259,10 +259,16 @@ main proc
     mov EDX, OFFSET playerMoveMessage
     call WriteString
 
-    Call ReadInt
-    cmp EAX, 1
+    call ReadChar
+    jo playerTurn          
+
+    cmp al, '1'
     je playerHit
-    jmp playerStand
+
+    cmp al, '2'
+    je playerStand
+
+    jmp playerTurn
 
 
 
