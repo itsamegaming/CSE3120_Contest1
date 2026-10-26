@@ -20,12 +20,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -58,7 +54,7 @@
               "RelativeDocumentMoniker": "BlackJack.asm",
               "ToolTip": "C:\\Users\\rl800\\Documents\\GitHub\\CSE3120_Contest1\\BlackJack.asm",
               "RelativeToolTip": "BlackJack.asm",
-              "ViewState": "AgIAAFoBAAAAAAAAAAAAAHIBAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAKoAAAAAAAAAAAAswPUAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2026-10-08T17:06:31.946Z",
               "EditorCaption": ""

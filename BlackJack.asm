@@ -125,7 +125,10 @@ playerAce BYTE 0
 
 dealerWinMessage BYTE "Dealer has Won",0
 playerWinMessage BYTE "Player has Won",0
+tieMessage BYTE "It is a tie!",0
 playerMoveMessage BYTE "Hit(1) or Stand(2)",0
+playerScoreMessage BYTE "Player Score: ",0
+dealerScoreMessage BYTE "Dealer Score: ",0
 playerCardCount BYTE 0
 dealerCardCount BYTE 0
 .code
@@ -204,6 +207,10 @@ main proc
     mov dh, 15
     call PrintCardAt
     inc playerCardCount
+    .IF playerScore > 21
+        dec playerAce
+        sub playerScore, 10
+    .ENDIF
     .IF dealerScore == 21 && playerScore == 21
         mov dl, 12
         mov dh, 1
@@ -236,7 +243,11 @@ main proc
             sub playerScore, 10
             jmp playerTurn
         .endIF
-    
+        mov dl, 12
+        mov dh, 1
+        mov EAX, dealerHiddenCard
+        mov ESI, cardTable[EAX*4]
+        call PrintCardAt
         jmp dealerWin
     .endIF
     .IF playerScore == 21
@@ -272,6 +283,7 @@ main proc
     call PrintCardAt
     inc playerCardCount
     jmp playerTurn
+
     playerStand:
     mov dl, 12
     mov dh, 1
@@ -315,6 +327,8 @@ main proc
     mov dh, 1
     call PrintCardAt
     inc dealerCardCount
+    mov eax, 2000          
+    call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
     jmp dealerTurn
     
 
@@ -327,12 +341,39 @@ main proc
 
 
     playerWin:
-
+    mov eax, 2000          
+    call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
+    call Clrscr
+    mov dl, 40
+    mov dh, 12
+    call Gotoxy
+    mov EDX, OFFSET playerWinMessage
+    call WriteString
+    call printScoresEnd 
+    jmp endProg
 
     dealerWin:
-
+    mov eax, 2000          
+    call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
+    call Clrscr
+    mov dl, 40
+    mov dh, 12
+    call Gotoxy
+    mov EDX, OFFSET dealerWinMessage
+    call WriteString
+    call printScoresEnd
+    jmp endProg
     tie:
-
+    mov eax, 2000          
+    call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
+    call Clrscr
+    mov dl, 40
+    mov dh, 12
+    call Gotoxy
+    mov EDX, OFFSET tieMessage
+    call WriteString
+    call printScoresEnd
+    jmp endProg
     endProg:
 
 	exit
@@ -379,5 +420,25 @@ tryAgain:
     mov usedCards[eax], 1
     ret
 DrawCard ENDP
+printScoresEnd PROC USES eax edx
+    mov dl, 30
+    mov dh, 14
+    call Gotoxy
 
+    mov edx, OFFSET playerScoreMessage
+    call WriteString
+    movzx eax, playerScore
+    call WriteDec
+
+    mov dl, 48
+    mov dh, 14
+    call Gotoxy
+
+    mov edx, OFFSET dealerScoreMessage
+    call WriteString
+    movzx eax, dealerScore
+    call WriteDec
+
+    ret
+printScoresEnd ENDP
 END main
