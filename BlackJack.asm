@@ -113,6 +113,7 @@ cardValues BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
            BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
            BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
            BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
+usedCards BYTE 52 DUP(0)
 dealerMessage BYTE "Dealers Cards:", 0
 playerMessage BYTE "Players Cards:", 0
 dealerHiddenCard DWORD ?
@@ -133,8 +134,7 @@ main proc
     mov EDX, OFFSET dealerMessage
     call WriteString
      
-    mov eax, 52
-    call RandomRange 
+    call DrawCard
     
     mov esi, cardTable[EAX*4]
     mov bl, cardValues[EAX] 
@@ -148,9 +148,8 @@ main proc
     mov dh, 1
     call PrintCardAt
     inc dealerCardCount
-    mov eax, 52
-    call RandomRange 
 
+    call DrawCard
     mov dealerHiddenCard, eax
     mov esi, OFFSET hiddenCard
     mov bl, cardValues[EAX]
@@ -178,8 +177,7 @@ main proc
     mov EDX, OFFSET playerMessage
     call WriteString
 
-    mov eax, 52
-    call RandomRange 
+    call DrawCard
     mov esi, cardTable[eax*4]
     mov bl, cardValues[EAX]
     add playerScore, bl
@@ -192,9 +190,8 @@ main proc
     mov dh, 15
     call PrintCardAt
     inc playerCardCount
-    mov eax, 52
-    call RandomRange 
 
+    call DrawCard
     mov esi, cardTable[eax*4]
     mov bl, cardValues[EAX]
     add playerScore, bl
@@ -264,8 +261,8 @@ main proc
     mov dl, al
     mov dh, 15
     call Gotoxy
-    mov eax, 52
-    call RandomRange 
+
+    call DrawCard
     mov esi, cardTable[eax*4]
     mov bl, cardValues[EAX]
     add playerScore, bl
@@ -302,8 +299,9 @@ main proc
    
 
     dealerHit:
-    mov eax, 52
-    call RandomRange 
+
+
+    call DrawCard
     
     mov esi, cardTable[EAX*4]
     mov bl, cardValues[EAX] 
@@ -369,5 +367,17 @@ nextRow:
 finished:
     ret
 PrintCardAt ENDP
+
+DrawCard PROC
+tryAgain:
+    mov eax, 52
+    call RandomRange
+
+    cmp usedCards[eax], 0
+    jne tryAgain
+
+    mov usedCards[eax], 1
+    ret
+DrawCard ENDP
 
 END main
