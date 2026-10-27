@@ -131,8 +131,49 @@ playerScoreMessage BYTE "Player Score: ",0
 dealerScoreMessage BYTE "Dealer Score: ",0
 playerCardCount BYTE 0
 dealerCardCount BYTE 0
+playerChips DWORD 200
+playerChipMessagePre BYTE "You have ",0
+playerChipMessageSuf BYTE " chips",0
+playerBetMessage BYTE "How much would you like to bet?: ",0
+playerBet DWORD 0 
+playAgainMessage BYTE "Would you like to play again(1) or walk away(2) with ", 0
+playerOutChips BYTE "Game Over, you ran out of chips",0 
+
 .code
 main proc
+    newGame:
+    call resetGame
+    call Clrscr
+    mov dl, 30
+    mov dh, 12 
+    call Gotoxy
+    mov EDX, OFFSET playerChipMessagePre
+    call WriteString
+    mov EAX, playerChips
+    call WriteDec
+    mov EDX, OFFSET playerChipMessageSuf
+    call WriteString
+
+    mov dl, 30
+    mov dh, 14
+    call Gotoxy
+    mov EDX, OFFSET playerBetMessage
+    call WriteString
+
+    call ReadInt
+    
+    jo newGame            ; Reject invalid input
+
+    cmp eax, 0
+    jle newGame                ; Reject zero or negative bets
+
+    cmp eax, playerChips
+    ja newGame
+    mov playerBet, eax                ; Reject bets above available chips
+
+           
+
+    call Clrscr
     call Randomize
     mov EDX, OFFSET dealerMessage
     call WriteString
@@ -260,7 +301,7 @@ main proc
     call WriteString
 
     call ReadChar
-    jo playerTurn          
+           
 
     cmp al, '1'
     je playerHit
@@ -356,6 +397,8 @@ main proc
     mov EDX, OFFSET playerWinMessage
     call WriteString
     call printScoresEnd 
+    mov eax, playerBet
+    add playerChips, eax
     jmp endProg
 
     dealerWin:
@@ -368,7 +411,10 @@ main proc
     mov EDX, OFFSET dealerWinMessage
     call WriteString
     call printScoresEnd
+    mov eax, playerBet
+    sub playerChips, eax
     jmp endProg
+
     tie:
     mov eax, 2000          
     call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
@@ -380,8 +426,45 @@ main proc
     call WriteString
     call printScoresEnd
     jmp endProg
-    endProg:
 
+
+    endProg:
+    mov eax, 2000
+    call Delay
+    call Clrscr
+    mov dl, 35
+    mov dh, 12
+    call Gotoxy
+    .IF (playerChips == 0)
+        mov EDX, OFFSET playerOutChips
+        call WriteString
+        jmp gameOver
+    .endIF
+
+    mov EDX, OFFSET playAgainMessage
+    call WriteString
+
+    mov EAX, playerChips
+    call WriteDec
+    mov EDX, OFFSET playerChipMessageSuf
+    call WriteString
+
+    readReplay:
+    call ReadChar
+    cmp al, '1'
+    je newGame
+    cmp al, '2'
+    je gameOver
+    jmp readReplay
+          
+
+    cmp al, '1'
+    je newGame
+
+    
+
+   
+    gameOver:
 	exit
 main endp
 
@@ -447,4 +530,27 @@ printScoresEnd PROC USES eax edx
 
     ret
 printScoresEnd ENDP
+resetGame PROC USES eax ecx edi
+    mov dealerScore, 0
+    mov playerScore, 0
+
+    mov dealerAce, 0
+    mov playerAce, 0
+
+    mov dealerCardCount, 0
+    mov playerCardCount, 0
+
+    mov dealerHiddenCard, 0
+    mov playerBet, 0
+
+    
+    cld
+    mov edi, OFFSET usedCards
+    mov ecx, LENGTHOF usedCards
+    xor eax, eax
+    rep stosb
+
+   
+    ret
+resetGame ENDP
 END main
