@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/27/26 00:52:39
+Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/27/26 01:02:21
 BlackJack.asm						     Page 1 - 1
 
 
@@ -1481,44 +1481,45 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
 
  00000000			.code
  00000000			main proc
- 00000000			    newGame:
- 00000000  E8 000004E9		    call resetGame
- 00000005  E8 00000000 E	    call Clrscr
- 0000000A  B2 1E		    mov dl, 30
- 0000000C  B6 0C		    mov dh, 12 
- 0000000E  E8 00000000 E	    call Gotoxy
- 00000013  BA 000019F9 R	    mov EDX, OFFSET playerChipMessagePre
- 00000018  E8 00000000 E	    call WriteString
- 0000001D  A1 000019F5 R	    mov EAX, playerChips
- 00000022  E8 00000000 E	    call WriteDec
- 00000027  BA 00001A03 R	    mov EDX, OFFSET playerChipMessageSuf
- 0000002C  E8 00000000 E	    call WriteString
+ 00000000  E8 00000000 E	    call Randomize
+ 00000005			    newGame:
+ 00000005  E8 000004E6		    call resetGame
+ 0000000A  E8 00000000 E	    call Clrscr
+ 0000000F  B2 1E		    mov dl, 30
+ 00000011  B6 0C		    mov dh, 12 
+ 00000013  E8 00000000 E	    call Gotoxy
+ 00000018  BA 000019F9 R	    mov EDX, OFFSET playerChipMessagePre
+ 0000001D  E8 00000000 E	    call WriteString
+ 00000022  A1 000019F5 R	    mov EAX, playerChips
+ 00000027  E8 00000000 E	    call WriteDec
+ 0000002C  BA 00001A03 R	    mov EDX, OFFSET playerChipMessageSuf
+ 00000031  E8 00000000 E	    call WriteString
 
- 00000031  B2 1E		    mov dl, 30
- 00000033  B6 0E		    mov dh, 14
- 00000035  E8 00000000 E	    call Gotoxy
- 0000003A  BA 00001A0A R	    mov EDX, OFFSET playerBetMessage
- 0000003F  E8 00000000 E	    call WriteString
+ 00000036  B2 1E		    mov dl, 30
+ 00000038  B6 0E		    mov dh, 14
+ 0000003A  E8 00000000 E	    call Gotoxy
+ 0000003F  BA 00001A0A R	    mov EDX, OFFSET playerBetMessage
+ 00000044  E8 00000000 E	    call WriteString
 
- 00000044  E8 00000000 E	    call ReadInt
+ 00000049  E8 00000000 E	    call ReadInt
 				    
- 00000049  70 B5		    jo newGame            ; Reject invalid input
+ 0000004E  70 B5		    jo newGame            ; Reject invalid input
 
- 0000004B  83 F8 00		    cmp eax, 0
- 0000004E  7E B0		    jle newGame                ; Reject zero or negative bets
+ 00000050  83 F8 00		    cmp eax, 0
+ 00000053  7E B0		    jle newGame                ; Reject zero or negative bets
 
- 00000050  3B 05 000019F5 R	    cmp eax, playerChips
- 00000056  77 A8		    ja newGame
- 00000058  A3 00001A2C R	    mov playerBet, eax                ; Reject bets above available chips
+ 00000055  3B 05 000019F5 R	    cmp eax, playerChips
+ 0000005B  77 A8		    ja newGame
+ 0000005D  A3 00001A2C R	    mov playerBet, eax                ; Reject bets above available chips
 
 				           
 
- 0000005D  E8 00000000 E	    call Clrscr
- 00000062  E8 00000000 E	    call Randomize
+ 00000062  E8 00000000 E	    call Clrscr
+				   
  00000067  BA 00001971 R	    mov EDX, OFFSET dealerMessage
  0000006C  E8 00000000 E	    call WriteString
 				     
- 00000071  E8 0000041A		    call DrawCard
+ 00000071  E8 0000041C		    call DrawCard
 				    
  00000076  8B 34 85		    mov esi, cardTable[EAX*4]
 	   00001839 R
@@ -1535,10 +1536,10 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  0000009B  6B C0 0C		    imul eax, eax, 12          
  0000009E  8A D0		    mov dl, al
  000000A0  B6 01		    mov dh, 1
- 000000A2  E8 000003B6		    call PrintCardAt
+ 000000A2  E8 000003B8		    call PrintCardAt
  000000A7  FE 05 000019F4 R	    inc dealerCardCount
 
- 000000AD  E8 000003DE		    call DrawCard
+ 000000AD  E8 000003E0		    call DrawCard
  000000B2  A3 0000198F R	    mov dealerHiddenCard, eax
  000000B7  BE 000017C4 R	    mov esi, OFFSET hiddenCard
  000000BC  8A 98 00001909 R	    mov bl, cardValues[EAX]
@@ -1554,7 +1555,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  000000DA  6B C0 0C		    imul eax, eax, 12          
  000000DD  8A D0		    mov dl, al
  000000DF  B6 01		    mov dh, 1
- 000000E1  E8 00000377		    call PrintCardAt
+ 000000E1  E8 00000379		    call PrintCardAt
  000000E6  FE 05 000019F4 R	    inc dealerCardCount
 
 				    
@@ -1575,7 +1576,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  0000010B  BA 00001980 R	    mov EDX, OFFSET playerMessage
  00000110  E8 00000000 E	    call WriteString
 
- 00000115  E8 00000376		    call DrawCard
+ 00000115  E8 00000378		    call DrawCard
  0000011A  8B 34 85		    mov esi, cardTable[eax*4]
 	   00001839 R
  00000121  8A 98 00001909 R	    mov bl, cardValues[EAX]
@@ -1591,10 +1592,10 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  0000013F  6B C0 0C		    imul eax, eax, 12          
  00000142  8A D0		    mov dl, al
  00000144  B6 0F		    mov dh, 15
- 00000146  E8 00000312		    call PrintCardAt
+ 00000146  E8 00000314		    call PrintCardAt
  0000014B  FE 05 000019F3 R	    inc playerCardCount
 
- 00000151  E8 0000033A		    call DrawCard
+ 00000151  E8 0000033C		    call DrawCard
  00000156  8B 34 85		    mov esi, cardTable[eax*4]
 	   00001839 R
  0000015D  8A 98 00001909 R	    mov bl, cardValues[EAX]
@@ -1610,7 +1611,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  0000017B  6B C0 0C		    imul eax, eax, 12          
  0000017E  8A D0		    mov dl, al
  00000180  B6 0F		    mov dh, 15
- 00000182  E8 000002D6		    call PrintCardAt
+ 00000182  E8 000002D8		    call PrintCardAt
  00000187  FE 05 000019F3 R	    inc playerCardCount
 				    .IF playerScore > 21
  0000018D  80 3D 00001994 R
@@ -1633,7 +1634,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  000001B9  A1 0000198F R	        mov EAX, dealerHiddenCard
  000001BE  8B 34 85		        mov ESI, cardTable[EAX*4]
 	   00001839 R
- 000001C5  E8 00000293		        call PrintCardAt
+ 000001C5  E8 00000295		        call PrintCardAt
  000001CA  E9 000001F8		        jmp tie
 				    .endIF
  000001CF		   *@C000D:
@@ -1646,7 +1647,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  000001DC  A1 0000198F R	        mov EAX, dealerHiddenCard
  000001E1  8B 34 85		        mov ESI, cardTable[EAX*4]
 	   00001839 R
- 000001E8  E8 00000270		        call PrintCardAt
+ 000001E8  E8 00000272		        call PrintCardAt
  000001ED  E9 000001A1		        jmp dealerWin
 				    .endif
  000001F2		   *@C0010:
@@ -1659,7 +1660,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  000001FF  A1 0000198F R	        mov EAX, dealerHiddenCard
  00000204  8B 34 85		        mov ESI, cardTable[EAX*4]
 	   00001839 R
- 0000020B  E8 0000024D		        call PrintCardAt
+ 0000020B  E8 0000024F		        call PrintCardAt
  00000210  E9 0000014A		        jmp playerWin
 				    .endIF
  00000215		   *@C0012:
@@ -1684,7 +1685,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  0000023A  A1 0000198F R	        mov EAX, dealerHiddenCard
  0000023F  8B 34 85		        mov ESI, cardTable[EAX*4]
 	   00001839 R
- 00000246  E8 00000212		        call PrintCardAt
+ 00000246  E8 00000214		        call PrintCardAt
  0000024B  E9 00000143		        jmp dealerWin
 				    .endIF
  00000250		   *@C0014:
@@ -1722,7 +1723,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  00000289  B6 0F		    mov dh, 15
  0000028B  E8 00000000 E	    call Gotoxy
 
- 00000290  E8 000001FB		    call DrawCard
+ 00000290  E8 000001FD		    call DrawCard
  00000295  8B 34 85		    mov esi, cardTable[eax*4]
 	   00001839 R
  0000029C  8A 98 00001909 R	    mov bl, cardValues[EAX]
@@ -1733,7 +1734,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  000002AD  FE 05 00001996 R	        inc playerAce
 				    .endif
  000002B3		   *@C001A:
- 000002B3  E8 000001A5		    call PrintCardAt
+ 000002B3  E8 000001A7		    call PrintCardAt
  000002B8  FE 05 000019F3 R	    inc playerCardCount
  000002BE  E9 FFFFFF52		    jmp playerTurn
 
@@ -1743,7 +1744,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  000002C7  A1 0000198F R	    mov EAX, dealerHiddenCard
  000002CC  8B 34 85		    mov ESI, cardTable[EAX*4]
 	   00001839 R
- 000002D3  E8 00000185		    call PrintCardAt
+ 000002D3  E8 00000187		    call PrintCardAt
 				   
 				    
 
@@ -1780,7 +1781,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  00000306			    dealerHit:
 
 
- 00000306  E8 00000185		    call DrawCard
+ 00000306  E8 00000187		    call DrawCard
 				    
  0000030B  8B 34 85		    mov esi, cardTable[EAX*4]
 	   00001839 R
@@ -1797,7 +1798,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  00000330  6B C0 0C		    imul eax, eax, 12          
  00000333  8A D0		    mov dl, al
  00000335  B6 01		    mov dh, 1
- 00000337  E8 00000121		    call PrintCardAt
+ 00000337  E8 00000123		    call PrintCardAt
  0000033C  FE 05 000019F4 R	    inc dealerCardCount
  00000342  B8 000007D0		    mov eax, 2000          
  00000347  E8 00000000 E	    call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
@@ -1821,7 +1822,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  00000372  E8 00000000 E	    call Gotoxy
  00000377  BA 000019A6 R	    mov EDX, OFFSET playerWinMessage
  0000037C  E8 00000000 E	    call WriteString
- 00000381  E8 00000125		    call printScoresEnd 
+ 00000381  E8 00000127		    call printScoresEnd 
  00000386  A1 00001A2C R	    mov eax, playerBet
  0000038B  01 05 000019F5 R	    add playerChips, eax
  00000391  EB 5D		    jmp endProg
@@ -1835,7 +1836,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  000003A6  E8 00000000 E	    call Gotoxy
  000003AB  BA 00001997 R	    mov EDX, OFFSET dealerWinMessage
  000003B0  E8 00000000 E	    call WriteString
- 000003B5  E8 000000F1		    call printScoresEnd
+ 000003B5  E8 000000F3		    call printScoresEnd
  000003BA  A1 00001A2C R	    mov eax, playerBet
  000003BF  29 05 000019F5 R	    sub playerChips, eax
  000003C5  EB 29		    jmp endProg
@@ -1849,7 +1850,7 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  000003DA  E8 00000000 E	    call Gotoxy
  000003DF  BA 000019B5 R	    mov EDX, OFFSET tieMessage
  000003E4  E8 00000000 E	    call WriteString
- 000003E9  E8 000000BD		    call printScoresEnd
+ 000003E9  E8 000000BF		    call printScoresEnd
  000003EE  EB 00		    jmp endProg
 
 
@@ -1860,165 +1861,166 @@ BlackJack.asm(5) : warning A4011:multiple .MODEL directives found : .MODEL ignor
  000003FF  B2 23		    mov dl, 35
  00000401  B6 0C		    mov dh, 12
  00000403  E8 00000000 E	    call Gotoxy
-				    .IF (playerChips == 0)
+				    .IF playerChips == 0
  00000408  83 3D 000019F5 R
 	   00		   *	    cmp    playerChips, 000h
- 0000040F  75 0C	   *	    jne    @C0024
- 00000411  BA 00001A66 R	        mov EDX, OFFSET playerOutChips
+ 0000040F  75 16	   *	    jne    @C0024
+ 00000411  BA 00001A66 R	        mov edx, OFFSET playerOutChips
  00000416  E8 00000000 E	        call WriteString
- 0000041B  EB 39		        jmp gameOver
-				    .endIF
- 0000041D		   *@C0024:
+ 0000041B  E8 00000000 E	        call Crlf
+ 00000420  E8 00000000 E	        call WaitMsg
+ 00000425  EB 31		        jmp gameOver
+				    .ENDIF
+ 00000427		   *@C0024:
 
- 0000041D  BA 00001A30 R	    mov EDX, OFFSET playAgainMessage
- 00000422  E8 00000000 E	    call WriteString
+ 00000427  BA 00001A30 R	    mov EDX, OFFSET playAgainMessage
+ 0000042C  E8 00000000 E	    call WriteString
 
- 00000427  A1 000019F5 R	    mov EAX, playerChips
- 0000042C  E8 00000000 E	    call WriteDec
- 00000431  BA 00001A03 R	    mov EDX, OFFSET playerChipMessageSuf
- 00000436  E8 00000000 E	    call WriteString
+ 00000431  A1 000019F5 R	    mov EAX, playerChips
+ 00000436  E8 00000000 E	    call WriteDec
+ 0000043B  BA 00001A03 R	    mov EDX, OFFSET playerChipMessageSuf
+ 00000440  E8 00000000 E	    call WriteString
 
- 0000043B			    readReplay:
- 0000043B  E8 00000000 E	    call ReadChar
- 00000440  3C 31		    cmp al, '1'
- 00000442  0F 84 FFFFFBB8	    je newGame
- 00000448  3C 32		    cmp al, '2'
- 0000044A  74 0A		    je gameOver
- 0000044C  EB ED		    jmp readReplay
+ 00000445			    readReplay:
+ 00000445  E8 00000000 E	    call ReadChar
+ 0000044A  3C 31		    cmp al, '1'
+ 0000044C  0F 84 FFFFFBB3	    je newGame
+ 00000452  3C 32		    cmp al, '2'
+ 00000454  74 02		    je gameOver
+ 00000456  EB ED		    jmp readReplay
 				          
 
- 0000044E  3C 31		    cmp al, '1'
- 00000450  0F 84 FFFFFBAA	    je newGame
+				    
 
 				    
 
 				   
- 00000456			    gameOver:
+ 00000458			    gameOver:
 					exit
- 00000456  6A 00	   *	    push   +000000000h
- 00000458  E8 00000000 E   *	    call   ExitProcess
- 0000045D			main endp
+ 00000458  6A 00	   *	    push   +000000000h
+ 0000045A  E8 00000000 E   *	    call   ExitProcess
+ 0000045F			main endp
 
- 0000045D			PrintCardAt PROC USES eax ebx edx esi
- 0000045D  50		   *	    push   eax
- 0000045E  53		   *	    push   ebx
- 0000045F  52		   *	    push   edx
- 00000460  56		   *	    push   esi
- 00000461  0F B7 DA		    movzx ebx, dx          ; BL = starting column, BH = row
- 00000464  E8 00000000 E	    call Gotoxy
+ 0000045F			PrintCardAt PROC USES eax ebx edx esi
+ 0000045F  50		   *	    push   eax
+ 00000460  53		   *	    push   ebx
+ 00000461  52		   *	    push   edx
+ 00000462  56		   *	    push   esi
+ 00000463  0F B7 DA		    movzx ebx, dx          ; BL = starting column, BH = row
+ 00000466  E8 00000000 E	    call Gotoxy
 
- 00000469			nextCharacter:
- 00000469  8A 06		    mov al, [esi]
- 0000046B  46			    inc esi
+ 0000046B			nextCharacter:
+ 0000046B  8A 06		    mov al, [esi]
+ 0000046D  46			    inc esi
 
- 0000046C  3C 00		    cmp al, 0              ; End of string?
- 0000046E  74 1B		    je finished
+ 0000046E  3C 00		    cmp al, 0              ; End of string?
+ 00000470  74 1B		    je finished
 
- 00000470  3C 0D		    cmp al, 13             ; Ignore carriage return
- 00000472  74 F5		    je nextCharacter
+ 00000472  3C 0D		    cmp al, 13             ; Ignore carriage return
+ 00000474  74 F5		    je nextCharacter
 
- 00000474  3C 0A		    cmp al, 10             ; Handle newline ourselves
- 00000476  74 07		    je nextRow
+ 00000476  3C 0A		    cmp al, 10             ; Handle newline ourselves
+ 00000478  74 07		    je nextRow
 
- 00000478  E8 00000000 E	    call WriteChar         ; Print character in AL
- 0000047D  EB EA		    jmp nextCharacter
+ 0000047A  E8 00000000 E	    call WriteChar         ; Print character in AL
+ 0000047F  EB EA		    jmp nextCharacter
 
- 0000047F			nextRow:
- 0000047F  FE C7		    inc bh                 ; Move down one row
- 00000481  66| 8B D3		    mov dx, bx             ; Restore starting column and new row
- 00000484  E8 00000000 E	    call Gotoxy
- 00000489  EB DE		    jmp nextCharacter
+ 00000481			nextRow:
+ 00000481  FE C7		    inc bh                 ; Move down one row
+ 00000483  66| 8B D3		    mov dx, bx             ; Restore starting column and new row
+ 00000486  E8 00000000 E	    call Gotoxy
+ 0000048B  EB DE		    jmp nextCharacter
 
- 0000048B			finished:
+ 0000048D			finished:
 				    ret
- 0000048B  5E		   *	    pop    esi
- 0000048C  5A		   *	    pop    edx
- 0000048D  5B		   *	    pop    ebx
- 0000048E  58		   *	    pop    eax
- 0000048F  C3		   *	    ret    00000h
- 00000490			PrintCardAt ENDP
+ 0000048D  5E		   *	    pop    esi
+ 0000048E  5A		   *	    pop    edx
+ 0000048F  5B		   *	    pop    ebx
+ 00000490  58		   *	    pop    eax
+ 00000491  C3		   *	    ret    00000h
+ 00000492			PrintCardAt ENDP
 
- 00000490			DrawCard PROC
- 00000490			tryAgain:
- 00000490  B8 00000034		    mov eax, 52
- 00000495  E8 00000000 E	    call RandomRange
+ 00000492			DrawCard PROC
+ 00000492			tryAgain:
+ 00000492  B8 00000034		    mov eax, 52
+ 00000497  E8 00000000 E	    call RandomRange
 
- 0000049A  80 B8 0000193D R	    cmp usedCards[eax], 0
+ 0000049C  80 B8 0000193D R	    cmp usedCards[eax], 0
 	   00
- 000004A1  75 ED		    jne tryAgain
+ 000004A3  75 ED		    jne tryAgain
 
- 000004A3  C6 80 0000193D R	    mov usedCards[eax], 1
+ 000004A5  C6 80 0000193D R	    mov usedCards[eax], 1
 	   01
- 000004AA  C3			    ret
- 000004AB			DrawCard ENDP
- 000004AB			printScoresEnd PROC USES eax edx
- 000004AB  50		   *	    push   eax
- 000004AC  52		   *	    push   edx
- 000004AD  B2 1E		    mov dl, 30
- 000004AF  B6 0E		    mov dh, 14
- 000004B1  E8 00000000 E	    call Gotoxy
+ 000004AC  C3			    ret
+ 000004AD			DrawCard ENDP
+ 000004AD			printScoresEnd PROC USES eax edx
+ 000004AD  50		   *	    push   eax
+ 000004AE  52		   *	    push   edx
+ 000004AF  B2 1E		    mov dl, 30
+ 000004B1  B6 0E		    mov dh, 14
+ 000004B3  E8 00000000 E	    call Gotoxy
 
- 000004B6  BA 000019D5 R	    mov edx, OFFSET playerScoreMessage
- 000004BB  E8 00000000 E	    call WriteString
- 000004C0  0F B6 05		    movzx eax, playerScore
+ 000004B8  BA 000019D5 R	    mov edx, OFFSET playerScoreMessage
+ 000004BD  E8 00000000 E	    call WriteString
+ 000004C2  0F B6 05		    movzx eax, playerScore
 	   00001994 R
- 000004C7  E8 00000000 E	    call WriteDec
+ 000004C9  E8 00000000 E	    call WriteDec
 
- 000004CC  B2 30		    mov dl, 48
- 000004CE  B6 0E		    mov dh, 14
- 000004D0  E8 00000000 E	    call Gotoxy
+ 000004CE  B2 30		    mov dl, 48
+ 000004D0  B6 0E		    mov dh, 14
+ 000004D2  E8 00000000 E	    call Gotoxy
 
- 000004D5  BA 000019E4 R	    mov edx, OFFSET dealerScoreMessage
- 000004DA  E8 00000000 E	    call WriteString
- 000004DF  0F B6 05		    movzx eax, dealerScore
+ 000004D7  BA 000019E4 R	    mov edx, OFFSET dealerScoreMessage
+ 000004DC  E8 00000000 E	    call WriteString
+ 000004E1  0F B6 05		    movzx eax, dealerScore
 	   00001993 R
- 000004E6  E8 00000000 E	    call WriteDec
+ 000004E8  E8 00000000 E	    call WriteDec
 
 				    ret
- 000004EB  5A		   *	    pop    edx
- 000004EC  58		   *	    pop    eax
- 000004ED  C3		   *	    ret    00000h
- 000004EE			printScoresEnd ENDP
- 000004EE			resetGame PROC USES eax ecx edi
- 000004EE  50		   *	    push   eax
- 000004EF  51		   *	    push   ecx
- 000004F0  57		   *	    push   edi
- 000004F1  C6 05 00001993 R	    mov dealerScore, 0
+ 000004ED  5A		   *	    pop    edx
+ 000004EE  58		   *	    pop    eax
+ 000004EF  C3		   *	    ret    00000h
+ 000004F0			printScoresEnd ENDP
+ 000004F0			resetGame PROC USES eax ecx edi
+ 000004F0  50		   *	    push   eax
+ 000004F1  51		   *	    push   ecx
+ 000004F2  57		   *	    push   edi
+ 000004F3  C6 05 00001993 R	    mov dealerScore, 0
 	   00
- 000004F8  C6 05 00001994 R	    mov playerScore, 0
-	   00
-
- 000004FF  C6 05 00001995 R	    mov dealerAce, 0
-	   00
- 00000506  C6 05 00001996 R	    mov playerAce, 0
+ 000004FA  C6 05 00001994 R	    mov playerScore, 0
 	   00
 
- 0000050D  C6 05 000019F4 R	    mov dealerCardCount, 0
+ 00000501  C6 05 00001995 R	    mov dealerAce, 0
 	   00
- 00000514  C6 05 000019F3 R	    mov playerCardCount, 0
+ 00000508  C6 05 00001996 R	    mov playerAce, 0
 	   00
 
- 0000051B  C7 05 0000198F R	    mov dealerHiddenCard, 0
+ 0000050F  C6 05 000019F4 R	    mov dealerCardCount, 0
+	   00
+ 00000516  C6 05 000019F3 R	    mov playerCardCount, 0
+	   00
+
+ 0000051D  C7 05 0000198F R	    mov dealerHiddenCard, 0
 	   00000000
- 00000525  C7 05 00001A2C R	    mov playerBet, 0
+ 00000527  C7 05 00001A2C R	    mov playerBet, 0
 	   00000000
 
 				    
- 0000052F  FC			    cld
- 00000530  BF 0000193D R	    mov edi, OFFSET usedCards
- 00000535  B9 00000034		    mov ecx, LENGTHOF usedCards
- 0000053A  33 C0		    xor eax, eax
- 0000053C  F3/ AA		    rep stosb
+ 00000531  FC			    cld
+ 00000532  BF 0000193D R	    mov edi, OFFSET usedCards
+ 00000537  B9 00000034		    mov ecx, LENGTHOF usedCards
+ 0000053C  33 C0		    xor eax, eax
+ 0000053E  F3/ AA		    rep stosb
 
 				   
 				    ret
- 0000053E  5F		   *	    pop    edi
- 0000053F  59		   *	    pop    ecx
- 00000540  58		   *	    pop    eax
- 00000541  C3		   *	    ret    00000h
- 00000542			resetGame ENDP
+ 00000540  5F		   *	    pop    edi
+ 00000541  59		   *	    pop    ecx
+ 00000542  58		   *	    pop    eax
+ 00000543  C3		   *	    ret    00000h
+ 00000544			resetGame ENDP
 				END main
-Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/27/26 00:52:39
+Microsoft (R) Macro Assembler Version 14.51.36260.0	    10/27/26 01:02:21
 BlackJack.asm						     Symbols 2 - 1
 
 
@@ -2113,7 +2115,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00001A86 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000542 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000544 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -2127,8 +2129,8 @@ CreateFileA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 CreateOutputFile . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Crlf . . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Delay  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-DrawCard . . . . . . . . . . . .	P Near	 00000490 _TEXT	Length= 0000001B Public STDCALL
-  tryAgain . . . . . . . . . . .	L Near	 00000490 _TEXT	
+DrawCard . . . . . . . . . . . .	P Near	 00000492 _TEXT	Length= 0000001B Public STDCALL
+  tryAgain . . . . . . . . . . .	L Near	 00000492 _TEXT	
 DumpMem  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 DumpRegs . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -2170,10 +2172,10 @@ OpenInputFile  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 ParseDecimal32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ParseInteger32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 PeekConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-PrintCardAt  . . . . . . . . . .	P Near	 0000045D _TEXT	Length= 00000033 Public STDCALL
-  nextCharacter  . . . . . . . .	L Near	 00000469 _TEXT	
-  nextRow  . . . . . . . . . . .	L Near	 0000047F _TEXT	
-  finished . . . . . . . . . . .	L Near	 0000048B _TEXT	
+PrintCardAt  . . . . . . . . . .	P Near	 0000045F _TEXT	Length= 00000033 Public STDCALL
+  nextCharacter  . . . . . . . .	L Near	 0000046B _TEXT	
+  nextRow  . . . . . . . . . . .	L Near	 00000481 _TEXT	
+  finished . . . . . . . . . . .	L Near	 0000048D _TEXT	
 Random32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 RandomRange  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Randomize  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -2226,8 +2228,8 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000045D Public STDCALL
-  newGame  . . . . . . . . . . .	L Near	 00000000 _TEXT	
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000045F Public STDCALL
+  newGame  . . . . . . . . . . .	L Near	 00000005 _TEXT	
   playerTurn . . . . . . . . . .	L Near	 00000215 _TEXT	
   playerHit  . . . . . . . . . .	L Near	 0000027D _TEXT	
   playerStand  . . . . . . . . .	L Near	 000002C3 _TEXT	
@@ -2238,11 +2240,11 @@ main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000045D Public 
   dealerWin  . . . . . . . . . .	L Near	 00000393 _TEXT	
   tie  . . . . . . . . . . . . .	L Near	 000003C7 _TEXT	
   endProg  . . . . . . . . . . .	L Near	 000003F0 _TEXT	
-  readReplay . . . . . . . . . .	L Near	 0000043B _TEXT	
-  gameOver . . . . . . . . . . .	L Near	 00000456 _TEXT	
-printScoresEnd . . . . . . . . .	P Near	 000004AB _TEXT	Length= 00000043 Public STDCALL
+  readReplay . . . . . . . . . .	L Near	 00000445 _TEXT	
+  gameOver . . . . . . . . . . .	L Near	 00000458 _TEXT	
+printScoresEnd . . . . . . . . .	P Near	 000004AD _TEXT	Length= 00000043 Public STDCALL
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
-resetGame  . . . . . . . . . . .	P Near	 000004EE _TEXT	Length= 00000054 Public STDCALL
+resetGame  . . . . . . . . . . .	P Near	 000004F0 _TEXT	Length= 00000054 Public STDCALL
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 

@@ -141,6 +141,7 @@ playerOutChips BYTE "Game Over, you ran out of chips",0
 
 .code
 main proc
+    call Randomize
     newGame:
     call resetGame
     call Clrscr
@@ -174,7 +175,7 @@ main proc
            
 
     call Clrscr
-    call Randomize
+   
     mov EDX, OFFSET dealerMessage
     call WriteString
      
@@ -435,11 +436,13 @@ main proc
     mov dl, 35
     mov dh, 12
     call Gotoxy
-    .IF (playerChips == 0)
-        mov EDX, OFFSET playerOutChips
+    .IF playerChips == 0
+        mov edx, OFFSET playerOutChips
         call WriteString
+        call Crlf
+        call WaitMsg
         jmp gameOver
-    .endIF
+    .ENDIF
 
     mov EDX, OFFSET playAgainMessage
     call WriteString
@@ -458,8 +461,7 @@ main proc
     jmp readReplay
           
 
-    cmp al, '1'
-    je newGame
+    
 
     
 
