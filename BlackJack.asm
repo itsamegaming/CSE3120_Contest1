@@ -138,6 +138,7 @@ playerBetMessage BYTE "How much would you like to bet?: ",0
 playerBet DWORD 0 
 playAgainMessage BYTE "Would you like to play again(1) or walk away(2) with ", 0
 playerOutChips BYTE "Game Over, you ran out of chips",0 
+cardValueMessage BYTE "Card Value:",0
 
 .code
 main proc
@@ -178,12 +179,17 @@ main proc
    
     mov EDX, OFFSET dealerMessage
     call WriteString
-     
+    mov dl, 25
+    mov dh, 0
+    call Gotoxy
+    mov EDX, OFFSET cardValueMessage
+    call WriteString
     call DrawCard
     
     mov esi, cardTable[EAX*4]
     mov bl, cardValues[EAX] 
     add dealerScore, bl
+    
     .IF bl == 11
         inc dealerAce
     .endif
@@ -193,8 +199,15 @@ main proc
     mov dh, 1
     call PrintCardAt
     inc dealerCardCount
-
+    mov dl, 36
+    mov dh, 0
+    call Gotoxy
+    movzx EAX, dealerScore
+    call WriteDec
     call DrawCard
+    
+
+
     mov dealerHiddenCard, eax
     mov esi, OFFSET hiddenCard
     mov bl, cardValues[EAX]
@@ -220,6 +233,12 @@ main proc
     mov dh, 14
     call Gotoxy
     mov EDX, OFFSET playerMessage
+    
+    call WriteString
+    mov dl, 31
+    mov dh, 14
+    call Gotoxy
+    mov EDX, OFFSET cardValueMessage
     call WriteString
 
     call DrawCard
@@ -249,16 +268,27 @@ main proc
     mov dh, 15
     call PrintCardAt
     inc playerCardCount
+   
     .IF playerScore > 21
         dec playerAce
         sub playerScore, 10
     .ENDIF
+    mov dl, 42
+    mov dh, 14
+    call Gotoxy
+    movzx EAX, playerScore
+    call WriteDec
     .IF dealerScore == 21 && playerScore == 21
         mov dl, 12
         mov dh, 1
         mov EAX, dealerHiddenCard
         mov ESI, cardTable[EAX*4]
         call PrintCardAt
+        mov dl, 36
+        mov dh, 0
+        call Gotoxy
+        movzx EAX, dealerScore
+        call WriteDec
         jmp tie
     .endIF
     .IF dealerScore == 21 
@@ -267,6 +297,11 @@ main proc
         mov EAX, dealerHiddenCard
         mov ESI, cardTable[EAX*4]
         call PrintCardAt
+        mov dl, 36
+        mov dh, 0
+        call Gotoxy
+        movzx EAX, dealerScore
+        call WriteDec
         jmp dealerWin
     .endif
     .IF playerScore == 21
@@ -275,10 +310,16 @@ main proc
         mov EAX, dealerHiddenCard
         mov ESI, cardTable[EAX*4]
         call PrintCardAt
+        mov dl, 36
+        mov dh, 0
+        call Gotoxy
+        movzx EAX, dealerScore
+        call WriteDec
         jmp playerWin
     .endIF
 
     playerTurn:
+    
     .IF (playerScore > 21)
         .IF(playerAce >= 1)
             dec playerAce
@@ -290,8 +331,23 @@ main proc
         mov EAX, dealerHiddenCard
         mov ESI, cardTable[EAX*4]
         call PrintCardAt
+        mov dl, 36
+        mov dh, 0
+        call Gotoxy
+        movzx EAX, dealerScore
+        call WriteDec
+        mov dl, 42
+        mov dh, 14
+        call Gotoxy
+        movzx EAX, playerScore
+        call WriteDec
         jmp dealerWin
     .endIF
+    mov dl, 42
+    mov dh, 14
+    call Gotoxy
+    movzx EAX, playerScore
+    call WriteDec
     .IF playerScore == 21
         jmp playerStand
     .endIF
@@ -330,6 +386,7 @@ main proc
     .endif
     call PrintCardAt
     inc playerCardCount
+    
     jmp playerTurn
 
     playerStand:
@@ -338,7 +395,11 @@ main proc
     mov EAX, dealerHiddenCard
     mov ESI, cardTable[EAX*4]
     call PrintCardAt
-   
+    mov dl, 36
+    mov dh, 0
+    call Gotoxy
+    movzx EAX, dealerScore
+    call WriteDec
     
 
     dealerTurn:
@@ -348,18 +409,28 @@ main proc
             sub dealerScore, 10
             jmp dealerTurn
         .endIF
+        mov dl, 36
+        mov dh, 0
+        call Gotoxy
+        movzx EAX, dealerScore
+        call WriteDec
         jmp playerWin
     .endIF
-
+    mov dl, 36
+    mov dh, 0
+    call Gotoxy
+    movzx EAX, dealerScore
+    call WriteDec
     .IF dealerScore > 16
         jmp determineWinner
     .endIF
-
+   
 
    
 
     dealerHit:
-
+    mov eax, 1000          
+    call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
 
     call DrawCard
     
@@ -375,8 +446,7 @@ main proc
     mov dh, 1
     call PrintCardAt
     inc dealerCardCount
-    mov eax, 2000          
-    call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
+    
     jmp dealerTurn
     
 
@@ -389,6 +459,11 @@ main proc
 
 
     playerWin:
+    mov dl, 36
+    mov dh, 0
+    call Gotoxy
+    movzx EAX, dealerScore
+    call WriteDec
     mov eax, 2000          
     call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
     call Clrscr
@@ -555,4 +630,5 @@ resetGame PROC USES eax ecx edi
    
     ret
 resetGame ENDP
+
 END main
