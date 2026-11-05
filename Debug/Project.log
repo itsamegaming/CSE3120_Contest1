@@ -1,4 +1,4 @@
-﻿Build started 10/28/2026 4:41:29 PM.
+﻿Build started 11/5/2026 12:56:58 PM.
 Logging verbosity is set to: Detailed.     1>Project "C:\Users\rl800\Documents\GitHub\CSE3120_Contest1\Project.vcxproj" on node 2 (Build target(s)).
      1>Target "_CheckForInvalidConfigurationAndPlatform" in file "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "C:\Users\rl800\Documents\GitHub\CSE3120_Contest1\Project.vcxproj" (target "SetTelemetryEnvironmentVariables" depends on it):
      1>Task "Message"
@@ -125,6 +125,14 @@ Logging verbosity is set to: Detailed.     1>Project "C:\Users\rl800\Documents\G
        Done executing task "WriteLinesToFile".
      1>Done building target "_WriteMasmTlogs" in project "Project.vcxproj".
      1>Target "_MASM" in file "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VC\v180\BuildCustomizations\masm.targets" from project "C:\Users\rl800\Documents\GitHub\CSE3120_Contest1\Project.vcxproj" (target "_BuildGenerateSourcesAction" depends on it):
+       Task "Message"
+         Assembling BlackJack.asm...
+       Done executing task "Message".
+       Task "MASM"
+         cmd.exe /C "C:\Users\rl800\AppData\Local\Temp\tmp8e6d969d0c3946cdb76ed6743b6adff0.cmd"
+         ml.exe /c /nologo /Sg /Zi /Fo"Debug\BlackJack.obj" /Fl"Project.lst" /I "c:\Irvine" /W3 /errorReport:prompt  /TaBlackJack.asm
+     1>BlackJack.asm(5): warning A4011: multiple .MODEL directives found : .MODEL ignored
+       Done executing task "MASM".
      1>Done building target "_MASM" in project "Project.vcxproj".
      1>Target "CopyFileToFolders" in file "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VC\v180\Microsoft.CppCommon.targets" from project "C:\Users\rl800\Documents\GitHub\CSE3120_Contest1\Project.vcxproj" (target "_BuildGenerateSourcesAction" depends on it):
        Task "GetOutOfDateItems"
@@ -369,7 +377,12 @@ Logging verbosity is set to: Detailed.     1>Project "C:\Users\rl800\Documents\G
      1>Done Building Project "C:\Users\rl800\Documents\GitHub\CSE3120_Contest1\Project.vcxproj" (Build target(s)).
 
 Build succeeded.
-    0 Warning(s)
+
+       "C:\Users\rl800\Documents\GitHub\CSE3120_Contest1\Project.vcxproj" (Build target) (1) ->
+       (_MASM target) -> 
+         BlackJack.asm(5): warning A4011: multiple .MODEL directives found : .MODEL ignored
+
+    1 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:00.78
+Time Elapsed 00:00:04.79

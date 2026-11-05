@@ -84,8 +84,9 @@ diamondsTwo BYTE " _________",13,10,"|2        |",13,10,"|O        |",13,10,"|  
 heartsTwo BYTE " _________",13,10,"|2        |",13,10,"|#        |",13,10,"|    #    |",13,10,"|         |",13,10,"|    #    |",13,10,"|        #|",13,10,"|        Z|",13,10," ~~~~~~~~~ ",13,10,0
 spadesTwo BYTE " _________",13,10,"|2        |",13,10,"|@        |",13,10,"|    @    |",13,10,"|         |",13,10,"|    @    |",13,10,"|        @|",13,10,"|        Z|",13,10," ~~~~~~~~~ ",13,10,0
 
-;Hidden Card 
+;Hidden Card
 hiddenCard BYTE " _________",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10,"|         |",13,10," ~~~~~~~~~ ",13,10,0
+;card table for randomizing cards
 cardTable DWORD OFFSET clubsAce, OFFSET clubsTwo,
     OFFSET clubsThree, OFFSET clubsFour, OFFSET clubsFive,
     OFFSET clubsSix, OFFSET clubsSeven, OFFSET clubsEight,
@@ -109,13 +110,16 @@ cardTable DWORD OFFSET clubsAce, OFFSET clubsTwo,
     OFFSET spadesSix, OFFSET spadesSeven, OFFSET spadesEight,
     OFFSET spadesNine, OFFSET spadesTen, OFFSET spadesJack,
     OFFSET spadesQueen, OFFSET spadesKing
+    ;values of cards in line with cardTable
 cardValues BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
            BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
            BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
            BYTE 11,2,3,4,5,6,7,8,9,10,10,10,10
+;used cards so only one of each card can be drawn
 usedCards BYTE 52 DUP(0)
 dealerMessage BYTE "Dealers Cards:", 0
 playerMessage BYTE "Players Cards:", 0
+;card the player cant see initialy 
 dealerHiddenCard DWORD ?
 dealerScore BYTE 0
 playerScore BYTE 0
@@ -142,10 +146,13 @@ cardValueMessage BYTE "Card Value:",0
 
 .code
 main proc
+    ;seed rng 
     call Randomize
+    
     newGame:
     call resetGame
     call Clrscr
+    ;shows how many chips the player has
     mov dl, 30
     mov dh, 12 
     call Gotoxy
@@ -156,6 +163,7 @@ main proc
     mov EDX, OFFSET playerChipMessageSuf
     call WriteString
 
+    ;asks player how much they want to bet
     mov dl, 30
     mov dh, 14
     call Gotoxy
@@ -164,57 +172,69 @@ main proc
 
     call ReadInt
     
-    jo newGame            ; Reject invalid input
+     ;Reject invalid input
+    jo newGame           
 
+    ;Reject zero or negative bets
     cmp eax, 0
-    jle newGame                ; Reject zero or negative bets
+    jle newGame                
 
+    ;Reject bets above available chips
     cmp eax, playerChips
     ja newGame
-    mov playerBet, eax                ; Reject bets above available chips
+    mov playerBet, eax                
 
            
 
     call Clrscr
-   
+   ;Prints dealers first card and message
     mov EDX, OFFSET dealerMessage
     call WriteString
+
     mov dl, 25
     mov dh, 0
     call Gotoxy
     mov EDX, OFFSET cardValueMessage
     call WriteString
     call DrawCard
-    
+
+    ;adds card to score
     mov esi, cardTable[EAX*4]
     mov bl, cardValues[EAX] 
     add dealerScore, bl
-    
+    ;counts how many aces dealer has for later
     .IF bl == 11
         inc dealerAce
     .endif
+
+    ;multiplies dealer card count by 12 to print card properly
     movzx eax, dealerCardCount  
     imul eax, eax, 12          
     mov dl, al
     mov dh, 1
     call PrintCardAt
     inc dealerCardCount
+
+    ;prints dealer score on screen
     mov dl, 36
     mov dh, 0
     call Gotoxy
     movzx EAX, dealerScore
     call WriteDec
+
+    ;delaers second card
     call DrawCard
-    
-
-
     mov dealerHiddenCard, eax
     mov esi, OFFSET hiddenCard
     mov bl, cardValues[EAX]
     add dealerScore, bl
+
+    ;ace inc
    .IF bl == 11
         inc dealerAce
     .endif
+
+    ;mul for printing card in right spot
     movzx eax, dealerCardCount  
     imul eax, eax, 12          
     mov dl, al
@@ -222,29 +242,51 @@ main proc
     call PrintCardAt
     inc dealerCardCount
 
-    
+    ;logic for if dealer has over 21 with an ace (can't get higher than 21 without an ace)
     .IF dealerScore > 21
         dec dealerAce
         sub dealerScore, 10
     .endIF
 
-
+    ;player message print
     mov dl, 0
     mov dh, 14
     call Gotoxy
     mov EDX, OFFSET playerMessage
-    
     call WriteString
+
+    ;card value message print
     mov dl, 31
     mov dh, 14
     call Gotoxy
     mov EDX, OFFSET cardValueMessage
     call WriteString
 
+    ;card draw logic
     call DrawCard
     mov esi, cardTable[eax*4]
     mov bl, cardValues[EAX]
     add playerScore, bl
+    ;keeps track of how many aces the user has
+    .IF bl == 11
+        inc playerAce
+    .endif
+
+    ;card printing
+    movzx eax, playerCardCount  
+    imul eax, eax, 12          
+    mov dl, al
+    mov dh, 15
+    call PrintCardAt
+    inc playerCardCount
+
+    ;players second card
+    call DrawCard
+    mov esi, cardTable[eax*4]
+    mov bl, cardValues[EAX]
+    add playerScore, bl
+
+    ;ace counter
     .IF bl == 11
         inc playerAce
     .endif
@@ -255,102 +297,115 @@ main proc
     call PrintCardAt
     inc playerCardCount
 
-    call DrawCard
-    mov esi, cardTable[eax*4]
-    mov bl, cardValues[EAX]
-    add playerScore, bl
-    .IF bl == 11
-        inc playerAce
-    .endif
-    movzx eax, playerCardCount  
-    imul eax, eax, 12          
-    mov dl, al
-    mov dh, 15
-    call PrintCardAt
-    inc playerCardCount
-   
+   ;same with dealer player cant get over 21 without and ace starting so do ace logic
     .IF playerScore > 21
         dec playerAce
         sub playerScore, 10
     .ENDIF
+
+    ;player live score
     mov dl, 42
     mov dh, 14
     call Gotoxy
     movzx EAX, playerScore
     call WriteDec
+
+    ;both player and dealer get 21 in starting hand. Jump tie reveal dealer hidden card
     .IF dealerScore == 21 && playerScore == 21
         mov dl, 12
         mov dh, 1
         mov EAX, dealerHiddenCard
         mov ESI, cardTable[EAX*4]
         call PrintCardAt
+
         mov dl, 36
         mov dh, 0
         call Gotoxy
         movzx EAX, dealerScore
         call WriteDec
+
         jmp tie
     .endIF
+
+    ;if dealer has 21 starting hand player loses automatically jump dealerWin. Unhide dealer card update live score
     .IF dealerScore == 21 
         mov dl, 12
         mov dh, 1
         mov EAX, dealerHiddenCard
         mov ESI, cardTable[EAX*4]
         call PrintCardAt
+
         mov dl, 36
         mov dh, 0
         call Gotoxy
         movzx EAX, dealerScore
         call WriteDec
+
         jmp dealerWin
     .endif
+
+    ;player has starts with 21 and automatically wins (unless draw) normally 1.5x money but im nice so 2x
+    ;unhide dealerhidden card and update live score
     .IF playerScore == 21
         mov dl, 12
         mov dh, 1
         mov EAX, dealerHiddenCard
         mov ESI, cardTable[EAX*4]
         call PrintCardAt
+
         mov dl, 36
         mov dh, 0
         call Gotoxy
         movzx EAX, dealerScore
         call WriteDec
+
         jmp playerWin
     .endIF
 
+    ;start of players turn
     playerTurn:
-    
+    ;If player has over 21 they lose unless they have an ace
     .IF (playerScore > 21)
+        ;if a player has 1 or more aces and over 21 dec acecount and score. Restart player turn
         .IF(playerAce >= 1)
             dec playerAce
             sub playerScore, 10
             jmp playerTurn
         .endIF
+        ;updating live scores and dealer hidden card
         mov dl, 12
         mov dh, 1
         mov EAX, dealerHiddenCard
         mov ESI, cardTable[EAX*4]
         call PrintCardAt
+
         mov dl, 36
         mov dh, 0
         call Gotoxy
         movzx EAX, dealerScore
         call WriteDec
+
         mov dl, 42
         mov dh, 14
         call Gotoxy
         movzx EAX, playerScore
         call WriteDec
+
+        ;player loss by bust jump dealer win
         jmp dealerWin
     .endIF
+    ;update live score 
     mov dl, 42
     mov dh, 14
     call Gotoxy
     movzx EAX, playerScore
     call WriteDec
+
+    ;if player has 21 jump to stand. Idiot proof the game so player doesn't hit on 21
     .IF playerScore == 21
         jmp playerStand
     .endIF
+    ;asks player what they want to do (hit or stand)
     mov dl, 0
     mov dh, 25
     call Gotoxy
@@ -359,87 +414,113 @@ main proc
 
     call ReadChar
            
-
+    ;player hit
     cmp al, '1'
     je playerHit
 
+    ;player stand
     cmp al, '2'
     je playerStand
 
+    ;invalid input
     jmp playerTurn
 
 
-
+    ;player hit logic
     playerHit:
+    ;card draw 
     movzx eax, playerCardCount  
     imul eax, eax, 12          
     mov dl, al
     mov dh, 15
     call Gotoxy
-
     call DrawCard
+    
+    ;adding to player score
     mov esi, cardTable[eax*4]
     mov bl, cardValues[EAX]
     add playerScore, bl
+    
+    ;ace inc if player drew ace
     .IF bl == 11
         inc playerAce
     .endif
+    ;card print
     call PrintCardAt
     inc playerCardCount
-    
+
+    ;jump back to player turn
     jmp playerTurn
 
+    ;player stand
     playerStand:
+    ;prints dealer hidden card
     mov dl, 12
     mov dh, 1
     mov EAX, dealerHiddenCard
     mov ESI, cardTable[EAX*4]
     call PrintCardAt
+
+    ;update live score
     mov dl, 36
     mov dh, 0
     call Gotoxy
     movzx EAX, dealerScore
     call WriteDec
     
-
+    ;dealer turn logic
     dealerTurn:
+    ;checks if dealer score is over 21.If dealer has no aces player wins
     .IF dealerScore > 21
+        ;dealer has an ace dec ace count and sub dealerScore
         .IF dealerAce >= 1
             dec dealerAce
             sub dealerScore, 10
             jmp dealerTurn
         .endIF
+
+        ;update dealer live score
         mov dl, 36
         mov dh, 0
         call Gotoxy
         movzx EAX, dealerScore
         call WriteDec
+
+        ;player win jump
         jmp playerWin
     .endIF
+    ;update dealer live score
     mov dl, 36
     mov dh, 0
     call Gotoxy
     movzx EAX, dealerScore
     call WriteDec
+
+    ;dealer cant hit on greater than 16 so jump determine winner
     .IF dealerScore > 16
         jmp determineWinner
     .endIF
    
 
    
-
+   ;dealer hit logic
     dealerHit:
+    ;delay to look better
     mov eax, 1000          
     call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
 
+    ;draw card
     call DrawCard
-    
     mov esi, cardTable[EAX*4]
     mov bl, cardValues[EAX] 
     add dealerScore, bl
+
+    ;dealer ace logic
     .IF bl == 11
         inc dealerAce
     .endif
+
+    ;print card
     movzx eax, dealerCardCount  
     imul eax, eax, 12          
     mov dl, al
@@ -447,9 +528,10 @@ main proc
     call PrintCardAt
     inc dealerCardCount
     
+    ;keep running dealer turn till break
     jmp dealerTurn
     
-
+    ;check who has the higher score jmp to that winner. If tie jump tie
     determineWinner:
     mov al, playerScore
     cmp al, dealerScore
@@ -457,60 +539,87 @@ main proc
     jb dealerWin
     jmp tie
 
-
+    ;player Win logic
     playerWin:
+    ;update dealer live score
     mov dl, 36
     mov dh, 0
     call Gotoxy
     movzx EAX, dealerScore
     call WriteDec
+
+    ;delay so player can see dealer cards
     mov eax, 2000          
     call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
     call Clrscr
+
+    ;player win message print
     mov dl, 40
     mov dh, 12
     call Gotoxy
     mov EDX, OFFSET playerWinMessage
     call WriteString
-    call printScoresEnd 
+
+    call printScoresEnd
+    
+    ;since player won add it to chips so they have 2x the winnings
     mov eax, playerBet
     add playerChips, eax
+
     jmp endProg
 
+    ;dealer win logic
     dealerWin:
+    ;delay to see dealer cards
     mov eax, 2000          
     call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
     call Clrscr
+
+    ;dealer win message
     mov dl, 40
     mov dh, 12
     call Gotoxy
     mov EDX, OFFSET dealerWinMessage
     call WriteString
+
     call printScoresEnd
+
+    ;subtract player bet from player chips as they lost
     mov eax, playerBet
     sub playerChips, eax
     jmp endProg
 
+    ;tie logic
     tie:
+    ;delay so player can see dealer cards
     mov eax, 2000          
     call Delay  ;https://http.johnnyconsole.com/~console/irvine32-documentation/
     call Clrscr
+
+    ;print tie message
     mov dl, 40
     mov dh, 12
     call Gotoxy
     mov EDX, OFFSET tieMessage
     call WriteString
+
+
     call printScoresEnd
     jmp endProg
 
-
+    ;player can choose to walk away or play again 
     endProg:
+    ;delay so player can see who won
     mov eax, 2000
     call Delay
     call Clrscr
+
+    
     mov dl, 35
     mov dh, 12
     call Gotoxy
+    
+    ;if player has 0 chips they lost so jump to game over
     .IF playerChips == 0
         mov edx, OFFSET playerOutChips
         call WriteString
@@ -519,20 +628,29 @@ main proc
         jmp gameOver
     .ENDIF
 
+    ;print asking player if they want to play again. Also tells them how many chips they have
     mov EDX, OFFSET playAgainMessage
     call WriteString
 
     mov EAX, playerChips
     call WriteDec
+
     mov EDX, OFFSET playerChipMessageSuf
     call WriteString
 
+    ;loop for player answer to playing again
     readReplay:
     call ReadChar
+
+    ;user wants to play again jump new game
     cmp al, '1'
     je newGame
+
+    ;user wants to walk away jump game over
     cmp al, '2'
     je gameOver
+
+    ;invalid input try again
     jmp readReplay
           
 
@@ -544,37 +662,46 @@ main proc
     gameOver:
 	exit
 main endp
-
+;function to print cards without overlapping. Uses pushes and pops stack for all registers i use
 PrintCardAt PROC USES eax ebx edx esi
-    movzx ebx, dx          ; BL = starting column, BH = row
+    ;moves to proper row and stores the starting column to go back to
+    movzx ebx, dx          
     call Gotoxy
 
+;prints the current character
 nextCharacter:
     mov al, [esi]
     inc esi
 
-    cmp al, 0              ; End of string?
+    ;checks to see if the end of the card has been reached
+    cmp al, 0              
     je finished
 
-    cmp al, 13             ; Ignore carriage return
+    ;makes sure cariage return is ignored
+    cmp al, 13           
     je nextCharacter
 
-    cmp al, 10             ; Handle newline ourselves
+    ;new line is here. jump to next row
+    cmp al, 10             
     je nextRow
 
-    call WriteChar         ; Print character in AL
+    ;print the character 
+    call WriteChar         
     jmp nextCharacter
 
+    ;moves the row down and jumps back to the starting column
 nextRow:
-    inc bh                 ; Move down one row
-    mov dx, bx             ; Restore starting column and new row
+    inc bh                 
+    mov dx, bx             
     call Gotoxy
     jmp nextCharacter
 
+;card is done being printed
 finished:
     ret
 PrintCardAt ENDP
 
+;gets the random number and makes sure that card hasn't been drawn yet. Also when a card is used it sets that flag in usedCards
 DrawCard PROC
 tryAgain:
     mov eax, 52
@@ -586,11 +713,14 @@ tryAgain:
     mov usedCards[eax], 1
     ret
 DrawCard ENDP
+;prints the scores at the end of the game
 printScoresEnd PROC USES eax edx
+
     mov dl, 30
     mov dh, 14
     call Gotoxy
 
+    ;prints player score and message
     mov edx, OFFSET playerScoreMessage
     call WriteString
     movzx eax, playerScore
@@ -600,6 +730,7 @@ printScoresEnd PROC USES eax edx
     mov dh, 14
     call Gotoxy
 
+    ;prints dealer score and message
     mov edx, OFFSET dealerScoreMessage
     call WriteString
     movzx eax, dealerScore
@@ -607,6 +738,7 @@ printScoresEnd PROC USES eax edx
 
     ret
 printScoresEnd ENDP
+;resets all the variables that need to be
 resetGame PROC USES eax ecx edi
     mov dealerScore, 0
     mov playerScore, 0
@@ -620,11 +752,12 @@ resetGame PROC USES eax ecx edi
     mov dealerHiddenCard, 0
     mov playerBet, 0
 
-    
+    ;resets used cards 
     cld
     mov edi, OFFSET usedCards
     mov ecx, LENGTHOF usedCards
     xor eax, eax
+    ;memory filler (fills usedCards with 0s)
     rep stosb
 
    
